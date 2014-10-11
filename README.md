@@ -8,6 +8,6 @@ TODO
 
 ## License
 
-Copyright © 2014 rafik NACCACHE and Contributors
+Copyright © 2014 rafik Naccache and Contributors
 
 Distributed under the GNU GPL v3.
