@@ -16,9 +16,8 @@ that depend on themselves or on tasks that end up depending on
 themselves, actually, the tasks definition must be a directed non
 cyclical graph.
 
-Tasks affected to user 0 and/or with duration 0 (whichever occurs) is
-considered as a milestone, then it must have at least one valid
-predecessor.
+Special tasks with spcial user :milestone are milestones, i.e, they only have ids, descriptions and predecessors, and last 
+0 time units.
 
 The output of Milestones is a schedule, that is, if it's possible, the
 tasks map, with a :begin field, telling us when to begin each task.
