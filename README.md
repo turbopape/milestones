@@ -3,6 +3,9 @@
 
 <a href="https://gratipay.com/turbopape/"><img src="https://img.shields.io/gratipay/turbopape.svg"></a>
 
+<script data-gratipay-username="turbopape"
+        data-gratipay-widget="button"
+        src="https://grtp.co/v1.js"></script>
 
 Milestones is Clojure library which processes tasks with constraints
 in order to generate automatic schedules based on some parameters for
