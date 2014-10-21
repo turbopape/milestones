@@ -27,9 +27,14 @@
 
 
 (ns milestones.dyna-scheduler
-  (:require  [clojure.set]
-             [clojure.core.async :as async
-              :refer [chan go alts! alts!! >! >!! <!! <! close! timeout]]))
+  (:require
+    [milestones.graph-utilities :refer :all]
+    [clojure.set]
+    [clojure.core.async :as async
+     :refer [chan go alts! alts!! >! >!! <!! <! close! timeout]]))
+
+
+
 
 (defn gen-work-flow
   "Given all tasks description vector [{:task-id, ...},{}]
@@ -111,6 +116,8 @@
             preds)))
 
 (defn find-fireable-tasks
+ "finds which tasks can be fired based on their predecessors."
+ ;;TODO : Can be made more general using a vector of predicates
   [tasks
    output-schedule]
   (into []
@@ -188,8 +195,7 @@
   {:task-id 3 :time 2 :resource-id 1}
     {:task-id 3 :time 3 :resource-id 1}]
     we find start-time, completion rate for each task and then we return
-    a scheduled version of tasks. {1 {:begin 2 :completion-rate 2/5....})
-    "
+    a scheduled version of tasks. {1 {:begin 2 :completion-rate 2/5....})"
   [output-schedule
     tasks]
   (into {} (map (partial format-a-task-in-output-schedule output-schedule)
@@ -221,10 +227,11 @@
 
          his-incomplete-fireable-tasks-ids (keys his-incomplete-fireable-tasks)
 
+         ;; id of the task to be kept, work in progress
          fireable-id-in-wp (first (filter (partial task-in-work-in-progress?
                                                    tasks
                                                    current-work-flow)
-                                          his-incomplete-fireable-tasks-ids)) ;; id of the task to be kept, work in progress
+                                          his-incomplete-fireable-tasks-ids))
 
 
 
@@ -232,10 +239,10 @@
                                                             fireable-id-in-wp)
                                     fireable-id-in-wp))
 
-
+         ;; [ the part to be reordered and generated]
          fireable-ids-not-in-wp (vec
                                   (remove #(= % fireable-id-in-wp)
-                                          his-incomplete-fireable-tasks-ids )) ;; [ the part to be reordered and generated]
+                                          his-incomplete-fireable-tasks-ids ))
 
 
 
@@ -250,10 +257,10 @@
          his-new-ordered-workflow (gen-work-flow tasks
                                                  his-ordered-tasks-not-in-wp)]
 
-
+    ;; will be used to sync the threads, on for each resource
     (into his-new-ordered-workflow wp-vector)))
 
-;; will be used to sync the threads, on for each resource
+
 
 
 (defn run-scheduler-for-resource!
