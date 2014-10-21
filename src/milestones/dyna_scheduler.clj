@@ -280,10 +280,10 @@
                        :resource-id resource-id}
 
         _ (if (not (empty? my-workflow))
-                   (swap! workflows assoc resource-id (pop my-workflow)))]
+                   (alter workflows assoc resource-id (pop my-workflow)))]
 
 ;; now I inject the task-unit in the channel
-;; must be done inside a go block !!
+
 
     (go (>! chan-to-output the-task-unit))))
 
@@ -303,32 +303,31 @@
   [tasks
    reordering-properties]
   (let [c-to-me (chan)
-        timer (atom 0)
+        timer (ref 0)
         max-time (* 2 (total-task-duration tasks))
-        workflows (atom {})
-        output-schedule (atom [])
+        workflows (ref {})
+        output-schedule (ref [])
         resources-ids (map :resource-id (vals tasks))]
-
-    (while
-        (and (< @timer max-time)
-             (not (every? (partial task-complete?
-                                   tasks
-                                   @output-schedule ) (keys tasks))))
-
-      (swap! timer inc)
-      (doseq [resource resources-ids]
-        ;; next tick
-        ;; I fire their schedules
-        (run-scheduler-for-resource! @timer
-                                     resource
+    (dosync
+      (while
+          (and (< @timer max-time)
+               (not (every? (partial task-complete?
                                      tasks
-                                     @output-schedule
-                                     workflows
-                                     reordering-properties
-                                     c-to-me))
-      (dotimes [_ (count resources-ids)]
-          (swap! output-schedule conj (<!! (go (<! c-to-me))))))
-    @output-schedule))
+                                     @output-schedule) (keys tasks))))
+
+        (alter timer inc)
+        (doseq [resource resources-ids]
+          ;; next tick
+          ;; I fire their schedules
+          (run-scheduler-for-resource! @timer
+                                       resource
+                                       tasks
+                                       @output-schedule
+                                       workflows
+                                       reordering-properties
+                                       c-to-me))
+        (dotimes [_ (count resources-ids)]
+          (alter output-schedule conj (<!! (go (<! c-to-me)))))))))
 
 
 (defn schedule!
