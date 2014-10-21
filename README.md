@@ -1,4 +1,7 @@
 # Milestones - The Thinking Tasks Scheduler
+<script data-gratipay-username="turbopape"
+        data-gratipay-widget="button"
+        src="//grtp.co/v1.js"></script>
 
 Milestones is Clojure library which processes tasks with constraints
 in order to generate automatic schedules based on some parameters for
