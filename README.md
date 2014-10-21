@@ -31,7 +31,16 @@ tasks map, with a :begin field, telling us when to begin each task.
 
 ## Usage
 
-TODO
+You fire the library using the schedule! function , 
+you pass to it a map containin  tasks and a vector containing the 
+properties you want the scheduler to use to give higer priorities to tasks (
+less is higher priority) like so
+
+(schedule! tasks [:priority :duration])
+
+It gives you back tasks with begin fields.
+
+
 
 ## History
 

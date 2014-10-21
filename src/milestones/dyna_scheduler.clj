@@ -327,7 +327,8 @@
                                        reordering-properties
                                        c-to-me))
         (dotimes [_ (count resources-ids)]
-          (alter output-schedule conj (<!! (go (<! c-to-me)))))))))
+          (alter output-schedule conj (<!! (go (<! c-to-me)))))))
+    @output-schedule))
 
 
 (defn schedule!
