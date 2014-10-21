@@ -1,7 +1,7 @@
 # Milestones - The Thinking Tasks Scheduler
 
 
-<a href="https://gratioay.com/turbopape"><img src="//img.shields.io/gratipay/turbopape.svg"></a>
+<a href="https://gratipay.com/turbopape"><img src="//img.shields.io/gratipay/turbopape.svg"></a>
 
 
 Milestones is Clojure library which processes tasks with constraints
