@@ -25,16 +25,12 @@
 ;;; {:task-id 3 :time 2 :resource-id 1}
 ;;; {:task-id 3 :time 3 :resource-id 1}]
 
-
 (ns milestones.dyna-scheduler
   (:require
     [milestones.graph-utilities :refer :all]
     [clojure.set]
     [clojure.core.async :as async
      :refer [chan go alts! alts!! >! >!! <!! <! close! timeout]]))
-
-
-
 
 (defn gen-work-flow
   "Given all tasks description vector [{:task-id, ...},{}]
@@ -136,7 +132,6 @@
             #(map (comp % val) row-with-index )
             property-names ))))
 
-
 (defn reorder-tasks
   "sort task by the order of the properties given in the property-names
   vector. As it is a vector, accessing from right is more effcient. as more
@@ -148,47 +143,40 @@
              (mapcat keys (sort-by (properties property-names)
                                  (map (fn [[k v]] {k v}) tasks))))))
 
-
 (defn tasks-for-resource
   "Given a user-id, give you all tasks for this user (with all infos)"
   [tasks resource-id]
   (filter #(= resource-id (:resource-id (val %))) tasks))
-
-
-
 
 (defn task-sched-time-vector
   "given an output-schedule, and a task-id
   you get a time-vector of the task as present in the output schedule"
   [output-schedule
    task-id]
-(->> output-schedule
-    (group-by :task-id)
-    (#(get %1 task-id))
-    (map :time)
-    (vec)))
+  (->> output-schedule
+       (group-by :task-id)
+       (#(get %1 task-id))
+       (map :time)
+       (vec)))
 
 
 (defn format-a-task-in-output-schedule
   "given a task, we compute its current time vector
   and inject begin-time and completion ratio in it"
   [output-schedule
-    a-task]
-
-
+   a-task]
   (let [ [k v] a-task
          the-tv (task-sched-time-vector output-schedule k)]
 
     (if (not (empty? the-tv))
-      [k   (-> v
-                            (assoc :begin (apply min the-tv))
-                            (assoc :completed (count the-tv)))]
+      [k (-> v
+             (assoc :begin (apply min the-tv))
+             (assoc :completed (count the-tv)))]
       a-task)))
 
 
 (defn format-tasks-in-output-schedule
-  "
-  given an output schedule :
+  "given an output schedule :
   [{:task-id 1 :time 1 :resource-id 1}
   {:task-id 3 :time 1 :resource-id 1}
   {:task-id 1 :time 2 :resource-id 1}
@@ -197,7 +185,7 @@
     we find start-time, completion rate for each task and then we return
     a scheduled version of tasks. {1 {:begin 2 :completion-rate 2/5....})"
   [output-schedule
-    tasks]
+   tasks]
   (into {} (map (partial format-a-task-in-output-schedule output-schedule)
                 tasks)))
 
@@ -212,51 +200,32 @@
    current-output-schedule
    reordering-properties]
   (let [fireable-tasks-ids (find-fireable-tasks tasks
-                                                 current-output-schedule)
-
-
-         fireable-tasks (select-keys tasks fireable-tasks-ids)
-
-         his-fireable-tasks (tasks-for-resource fireable-tasks resource-id)
-
-         his-incomplete-fireable-tasks  (into {} (filter #(not (task-complete?
-                                                                 tasks
-                                                                 current-output-schedule
-                                                                 (key %)))
-                                                         his-fireable-tasks))
-
-         his-incomplete-fireable-tasks-ids (keys his-incomplete-fireable-tasks)
-
-         ;; id of the task to be kept, work in progress
-         fireable-id-in-wp (first (filter (partial task-in-work-in-progress?
-                                                   tasks
-                                                   current-work-flow)
-                                          his-incomplete-fireable-tasks-ids))
-
-
-
-         wp-vector (into [] (repeat (work-in-progress-count current-work-flow
-                                                            fireable-id-in-wp)
-                                    fireable-id-in-wp))
-
-         ;; [ the part to be reordered and generated]
-         fireable-ids-not-in-wp (vec
-                                  (remove #(= % fireable-id-in-wp)
-                                          his-incomplete-fireable-tasks-ids ))
-
-
-
-         his-fireable-tasks-not-in-wp (select-keys tasks fireable-ids-not-in-wp)
-
-
-         his-ordered-tasks-not-in-wp (reorder-tasks his-fireable-tasks-not-in-wp
-                                                    reordering-properties)
-
-
-
-         his-new-ordered-workflow (gen-work-flow tasks
-                                                 his-ordered-tasks-not-in-wp)]
-
+                                                current-output-schedule)
+        fireable-tasks (select-keys tasks fireable-tasks-ids)
+        his-fireable-tasks (tasks-for-resource fireable-tasks resource-id)
+        his-incomplete-fireable-tasks  (into {} (filter #(not (task-complete?
+                                                                tasks
+                                                                current-output-schedule
+                                                                (key %)))
+                                                        his-fireable-tasks))
+        his-incomplete-fireable-tasks-ids (keys his-incomplete-fireable-tasks)
+        ;; id of the task to be kept, work in progress
+        fireable-id-in-wp (first (filter (partial task-in-work-in-progress?
+                                                  tasks
+                                                  current-work-flow)
+                                         his-incomplete-fireable-tasks-ids))
+        wp-vector (into [] (repeat (work-in-progress-count current-work-flow
+                                                           fireable-id-in-wp)
+                                   fireable-id-in-wp))
+        ;; [ the part to be reordered and generated]
+        fireable-ids-not-in-wp (vec
+                                 (remove #(= % fireable-id-in-wp)
+                                         his-incomplete-fireable-tasks-ids ))
+        his-fireable-tasks-not-in-wp (select-keys tasks fireable-ids-not-in-wp)
+        his-ordered-tasks-not-in-wp (reorder-tasks his-fireable-tasks-not-in-wp
+                                                   reordering-properties)
+        his-new-ordered-workflow (gen-work-flow tasks
+                                                his-ordered-tasks-not-in-wp)]
     ;; will be used to sync the threads, on for each resource
     (into his-new-ordered-workflow wp-vector)))
 
@@ -273,25 +242,18 @@
    workflows
    reordering-properties
    chan-to-output]
-
   (let [ current-flow-for-resource (@workflows resource-id)
          my-workflow (work-flow-for-resource current-flow-for-resource
                                            tasks
                                            resource-id
                                            output-schedule
                                            reordering-properties)
-
-
-        the-task-unit {:task-id (peek my-workflow)
-                       :time timer
-                       :resource-id resource-id}
-
-        _ (if (not (empty? my-workflow))
-                   (alter workflows assoc resource-id (pop my-workflow)))]
-
-;; now I inject the task-unit in the channel
-
-
+         the-task-unit {:task-id (peek my-workflow)
+                        :time timer
+                        :resource-id resource-id}
+         _ (if (not (empty? my-workflow))
+             (alter workflows assoc resource-id (pop my-workflow)))]
+             ;; now I inject the task-unit in the channel
     (go (>! chan-to-output the-task-unit))))
 
 (defn total-task-duration
@@ -337,7 +299,7 @@
           (alter output-schedule conj (<!! (go (<! c-to-me)))))))
     @output-schedule))
 
-
+;;;TODO : add verification of cyclic dependencies, and predecessor existence.
 (defn schedule!
   "the real over-master-uber-function to call. Gives you tasks with :begin,
   just like you'd exepct"
