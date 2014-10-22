@@ -172,7 +172,7 @@
     (if (not (empty? the-tv))
       [k (-> v
              (assoc :begin (apply min the-tv))
-             (assoc :completed (count the-tv)))]
+             (assoc :achieved (count the-tv)))]
       a-task)))
 
 
@@ -234,9 +234,6 @@
     ;; will be used to sync the threads, on for each resource
     (into his-new-ordered-workflow wp-vector)))
 
-
-
-
 (defn run-scheduler-for-resource!
   "This runs a thread for the resource-id, connects to a channel,
   and waits to process a task-unit / timer tick, until the channel is closed"
@@ -270,7 +267,7 @@
        (filter (comp not nil?))
        (reduce +)))
 
-(defn run-scheduler!
+(defn run-scheduler
   "this is the master-mind. runs all of them, collects their inputs,
   and then goes home"
   [tasks
@@ -280,7 +277,7 @@
         max-time (* 2 (total-task-duration tasks))
         workflows (ref {})
         output-schedule (ref [])
-        resources-ids (map :resource-id (vals tasks))]
+        resources-ids (into #{} (map :resource-id (vals tasks)))]
     (dosync
       (while
           (and (< @timer max-time)
@@ -319,41 +316,78 @@
                    :let [missing-props (missing-prop-for-task t
                                                               reordering-properties)]
                    :when (not (empty? missing-props))]
-
                {id missing-props})))
 
-(defn tasks-w-non-existent-predecessors
+(defn tasks-w-not-found-predecessors
   [tasks]
   (keys (filter
           (fn [[_ t]] (not (predecessors-of-task-exist? tasks
                                                         t)))
           tasks)))
 
-(defn verif-tasks
-  "verif if everything is ok befor we schedule.
+
+(defn tasks-w-no-field
+  "which tasks don't have field or have field empty"
+  [tasks field]
+   (filter (comp  not field val) tasks))
+
+(defn tasks-w-empty-predecessors
+  [tasks]
+  (vec (keys (into {} (filter (comp empty? val)
+  (into {} (map (fn [[id t]] {id (:predecessors t)} ) tasks )))))))
+
+
+(defn errors-on-tasks
+  "verif if there-s something wrong before we schedule.
   emits a map. {:errors {} clchedule
   errors : non existing reordering prop, non existing predecessors, and cycles."
   [tasks
    reordering-properties]
-  (let [reordering-errors (tasks-w-missing-properties tasks
+  (let [milestone-tasks (into {} (filter (comp :is-milestone val) tasks))
+        non-milestone-tasks (into {} (tasks-w-no-field tasks :is-milestone))
+        reordering-errors (tasks-w-missing-properties non-milestone-tasks
                                                       reordering-properties)
-        tasks-predecessors-errors (tasks-w-non-existent-predecessors tasks)
+        tasks-predecessors-errors (tasks-w-not-found-predecessors tasks)
         tasks-graph (gen-all-precedence-edges tasks)
-        tasks-cycles (graph-cycles tasks-graph)]
+        tasks-cycles (graph-cycles tasks-graph)
+        milestones-w-no-predecessors (tasks-w-no-field milestone-tasks
+                                                       :predecessors)
+        tasks-w-no-resources (tasks-w-no-field non-milestone-tasks
+                                               :resource-id)]
     {:reordering-errors reordering-errors
-    :tasks-predecessors-errors tasks-predecessors-errors
-    :tasks-cycles tasks-cycles }))
+     :tasks-predecessors-errors (into [] tasks-predecessors-errors)
+     :tasks-w-no-resources (into [] (keys tasks-w-no-resources))
+     :tasks-cycles tasks-cycles
+     :milestones-w-no-predecessors  (into (into [] (keys milestones-w-no-predecessors))
+                                          (tasks-w-empty-predecessors milestone-tasks))}))
 
-(defn schedule!
+(defn prepare-milestone
+  "A milestone is declared by giving :milestone-name and at least one predecessor
+  then we create a task, with a (gensym :milestone-user) and a duration 1 as user-id, so milestones
+  can enter the scheduler algorithm"
+  [a-milestone-desc]
+  (assoc (assoc a-milestone-desc :duration 1)
+         :resource-id (gensym :milestone-user)))
+
+(defn prepare-tasks
+  "Adds random user-ids and duration=1 to milestones tasks"
+[tasks]
+(let [milestone-tasks (filter (comp :is-milestone val) tasks)
+      curated-milestone-tasks (map (fn [[id t]] [id (prepare-milestone t)]) milestone-tasks)]
+  (into tasks curated-milestone-tasks)))
+
+(defn schedule
   "the real over-master-uber-function to call. Gives you tasks with :begin,
   just like you'd exepct, if errors =nil, or you can read errors instead."
   [tasks
    reordering-properties]
-  (let [errors (verif-tasks tasks reordering-properties)]
-    (if (every? nil? (vals errors))
+  (let [errors (errors-on-tasks tasks
+                                reordering-properties)]
+    (if (every? (comp nil? seq) (vals errors))
       {:error nil
-       :result (-> tasks
-                   (run-scheduler! reordering-properties)
-                   (format-tasks-in-output-schedule tasks))}
+       :result (let [curated-tasks (prepare-tasks tasks)]
+                 (-> curated-tasks
+                     (run-scheduler reordering-properties)
+                     (format-tasks-in-output-schedule curated-tasks)))}
       {:result nil
        :errors (into {} (filter (comp not nil? val) errors))})))

@@ -34,9 +34,8 @@
 
                 ;; now some milestones
              6 {:task-name "Toasts ready"
-                 :resource-id :milestones
+                :is-milestone true
                  :predecessors [3]
+              }})
 
-              }
-
-})
+;; TODO - write tests with begin and errors etc...
