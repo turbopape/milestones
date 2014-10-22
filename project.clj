@@ -8,7 +8,5 @@
                  [org.clojure/math.combinatorics "0.0.8"]
                  [aysylu/loom "0.5.0"]
                  [expectations "2.0.9"]]
-
   :profiles {:uberjar {:aot :all}
-             :dev {:plugins [[com.cemerick/austin "0.1.5"]
-                             [lein-expectations "0.0.8"]]}})
+             :dev {:plugins [[lein-expectations "0.0.8"]]}})
