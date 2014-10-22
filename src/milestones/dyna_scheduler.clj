@@ -98,7 +98,6 @@
          (not= (get (tasks the-task-id) :duration)
                wp-count))))
 
-
 (defn all-predecessors-complete?
   "a predicate that returns true if all predecessors have been completed "
   [tasks
@@ -188,9 +187,10 @@
     a scheduled version of tasks. {1 {:begin 2 :completion-rate 2/5....})"
   [output-schedule
    tasks]
-  (into {} (map (partial format-a-task-in-output-schedule output-schedule)
-                tasks)))
-
+  (into {}
+        (map (partial format-a-task-in-output-schedule
+                      output-schedule)
+             tasks)))
 
 (defn work-flow-for-resource
   "given a user,  its current work-queue, tasks and current output schedule,
@@ -203,13 +203,16 @@
    reordering-properties]
   (let [fireable-tasks-ids (find-fireable-tasks tasks
                                                 current-output-schedule)
-        fireable-tasks (select-keys tasks fireable-tasks-ids)
-        his-fireable-tasks (tasks-for-resource fireable-tasks resource-id)
-        his-incomplete-fireable-tasks  (into {} (filter #(not (task-complete?
+        fireable-tasks (select-keys tasks
+                                    fireable-tasks-ids)
+        his-fireable-tasks (tasks-for-resource fireable-tasks
+                                               resource-id)
+        his-incomplete-fireable-tasks  (into {}
+                                             (filter #(not (task-complete?
                                                                 tasks
                                                                 current-output-schedule
                                                                 (key %)))
-                                                        his-fireable-tasks))
+                                                     his-fireable-tasks))
         his-incomplete-fireable-tasks-ids (keys his-incomplete-fireable-tasks)
         ;; id of the task to be kept, work in progress
         fireable-id-in-wp (first (filter (partial task-in-work-in-progress?
@@ -244,7 +247,7 @@
    workflows
    reordering-properties
    chan-to-output]
-  (let [ current-flow-for-resource (@workflows resource-id)
+  (let [current-flow-for-resource (@workflows resource-id)
          my-workflow (work-flow-for-resource current-flow-for-resource
                                            tasks
                                            resource-id
@@ -255,7 +258,7 @@
                         :resource-id resource-id}
          _ (if (not (empty? my-workflow))
              (alter workflows assoc resource-id (pop my-workflow)))]
-             ;; now I inject the task-unit in the channel
+             ;; now we inject the task-unit in the channel
     (go (>! chan-to-output the-task-unit))))
 
 (defn total-task-duration
@@ -266,7 +269,6 @@
        (map :duration )
        (filter (comp not nil?))
        (reduce +)))
-
 
 (defn run-scheduler!
   "this is the master-mind. runs all of them, collects their inputs,
@@ -285,7 +287,6 @@
                (not (every? (partial task-complete?
                                      tasks
                                      @output-schedule) (keys tasks))))
-
         (alter timer inc)
         (doseq [resource resources-ids]
           ;; next tick
@@ -310,12 +311,10 @@
   (vec (filter (comp not nil?)
                (map #(if ((comp not (partial contains? task)) % ) %)
                     reordering-properties))))
-
   (defn tasks-w-missing-properties
   "returns a map, with task-id and a vector of missing property"
   [tasks
    reordering-properties]
-
     (into {} (for [[id t] tasks
                    :let [missing-props (missing-prop-for-task t
                                                               reordering-properties)]
@@ -323,10 +322,12 @@
 
                {id missing-props})))
 
-
 (defn tasks-w-non-existent-predecessors
   [tasks]
-  (keys (filter (fn [[_ t]] (not (predecessors-of-task-exist? tasks t))) tasks)))
+  (keys (filter
+          (fn [[_ t]] (not (predecessors-of-task-exist? tasks
+                                                        t)))
+          tasks)))
 
 (defn verif-tasks
   "verif if everything is ok befor we schedule.
@@ -334,14 +335,11 @@
   errors : non existing reordering prop, non existing predecessors, and cycles."
   [tasks
    reordering-properties]
-  (let [reordering-errors (tasks-w-missing-properties tasks reordering-properties)
-        _ (println reordering-errors)
+  (let [reordering-errors (tasks-w-missing-properties tasks
+                                                      reordering-properties)
         tasks-predecessors-errors (tasks-w-non-existent-predecessors tasks)
-        _ (println tasks-predecessors-errors)
         tasks-graph (gen-all-precedence-edges tasks)
-        tasks-cycles (graph-cycles tasks-graph)
-        _ (println tasks-cycles)]
-
+        tasks-cycles (graph-cycles tasks-graph)]
     {:reordering-errors reordering-errors
     :tasks-predecessors-errors tasks-predecessors-errors
     :tasks-cycles tasks-cycles }))
@@ -351,13 +349,11 @@
   just like you'd exepct, if errors =nil, or you can read errors instead."
   [tasks
    reordering-properties]
-
   (let [errors (verif-tasks tasks reordering-properties)]
     (if (every? nil? (vals errors))
       {:error nil
        :result (-> tasks
                    (run-scheduler! reordering-properties)
                    (format-tasks-in-output-schedule tasks))}
-
       {:result nil
        :errors (into {} (filter (comp not nil? val) errors))})))
