@@ -2,6 +2,7 @@
 
 
 <a href="https://gratipay.com/turbopape/"><img src="https://img.shields.io/gratipay/turbopape.svg"></a>
+[![Build Status](https://travis-ci.org/automagictools/milestones.svg?branch=master)](https://travis-ci.org/automagictools/milestones)
 
 Milestones is Clojure library which processes tasks with constraints
 in order to generate automatic schedules based on some parameters for
