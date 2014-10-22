@@ -1,8 +1,19 @@
 # Milestones - The Thinking Tasks Scheduler
 
-
+<a href="http://www.gnu.org/licenses/gpl-3.0.html"><img src="http://img.shields.io/badge/license-GPL%203-green.svg"></a>
 <a href="https://gratipay.com/turbopape/"><img src="https://img.shields.io/gratipay/turbopape.svg"></a>
 [![Build Status](https://travis-ci.org/automagictools/milestones.svg?branch=master)](https://travis-ci.org/automagictools/milestones)
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_donations">
+<input type="hidden" name="business" value="rafik.naccache@gmail.com">
+<input type="hidden" name="lc" value="TN">
+<input type="hidden" name="item_name" value="Automagic Tools">
+<input type="hidden" name="no_note" value="0">
+<input type="hidden" name="currency_code" value="USD">
+<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_LG.gif:NonHostedGuest">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/fr_XC/i/scr/pixel.gif" width="1" height="1">
+</form>
 
 Milestones is Clojure library which processes tasks with constraints
 in order to generate automatic schedules based on some parameters for
