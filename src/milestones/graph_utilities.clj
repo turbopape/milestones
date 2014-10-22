@@ -7,8 +7,7 @@
     [loom.graph :refer [digraph nodes]]
     [loom.alg :refer [bf-path]]
     [loom.io :refer [view]]
-    [clojure.math.combinatorics :refer [combinations]]
-    ))
+    [clojure.math.combinatorics :refer [combinations]]))
 
 
 (defn predecessors-of-task-exist?
@@ -36,8 +35,6 @@
   (let [;; raw-maps ~ [1 [ 2 3] 2 [ 3 2]]
          raw-maps (map (fn [[k v]] [k (:predecessors v)]) tasks)]
     (mapcat (fn [[k v]] (gen-precendence-edge k v) ) raw-maps)))
-
-
 
 (defn graph-cycles
   "tests for every couple a and b if there is a path
