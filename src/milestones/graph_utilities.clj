@@ -9,7 +9,6 @@
     [loom.io :refer [view]]
     [clojure.math.combinatorics :refer [combinations]]))
 
-
 (defn predecessors-of-task-exist?
   "return true if all predecessors of this task
   exist or if this task has no preds"
@@ -28,7 +27,6 @@
   [task-id predecessors]
   (mapv (fn[predecessor] [task-id predecessor]) predecessors))
 
-
 (defn gen-all-precedence-edges
  "Given tasks, computes all the edges present in this graph"
   [tasks]
@@ -45,6 +43,8 @@
         vertices (vec(nodes di-graph) )
         all-paths (combinations vertices 2)]
 
-    (vec (filter (fn [[l r]] (and  (seq (bf-path di-graph l r))
+    (mapv vec (filter (fn [[l r]] (and  (seq (bf-path di-graph l r))
                               (seq (bf-path di-graph r l))) )
-            all-paths))))
+                      all-paths))))
+
+

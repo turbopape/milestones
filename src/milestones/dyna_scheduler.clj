@@ -1,6 +1,6 @@
 ;;; The Dynamic Scheduler,
 ;;; Using core.async channels, it will plan tasks.
-;;; input is a seq of tasks like:
+;;; input is a map of tasks like:
 
 
 ;;;           1 {:task-name "A description about this task"
@@ -24,6 +24,8 @@
 ;;; {:task-id 3 :time 1 :resource-id 1}
 ;;; {:task-id 3 :time 2 :resource-id 1}
 ;;; {:task-id 3 :time 3 :resource-id 1}]
+
+;;; a function exist in the end that emits same tasks with begin field, or errors to be treated.
 
 (ns milestones.dyna-scheduler
   (:require
@@ -299,12 +301,63 @@
           (alter output-schedule conj (<!! (go (<! c-to-me)))))))
     @output-schedule))
 
-;;;TODO : add verification of cyclic dependencies, and predecessor existence.
-(defn schedule!
-  "the real over-master-uber-function to call. Gives you tasks with :begin,
-  just like you'd exepct"
+
+(defn missing-prop-for-task
+  "given a task ({:prop ...}) and a vector of properties
+  returns missing properties for task"
+  [task
+    reordering-properties]
+  (vec (filter (comp not nil?)
+               (map #(if ((comp not (partial contains? task)) % ) %)
+                    reordering-properties))))
+
+  (defn tasks-w-missing-properties
+  "returns a map, with task-id and a vector of missing property"
   [tasks
    reordering-properties]
-  (-> tasks
-      (run-scheduler! reordering-properties)
-      (format-tasks-in-output-schedule tasks)))
+
+    (into {} (for [[id t] tasks
+                   :let [missing-props (missing-prop-for-task t
+                                                              reordering-properties)]
+                   :when (not (empty? missing-props))]
+
+               {id missing-props})))
+
+
+(defn tasks-w-non-existent-predecessors
+  [tasks]
+  (keys (filter (fn [[_ t]] (not (predecessors-of-task-exist? tasks t))) tasks)))
+
+(defn verif-tasks
+  "verif if everything is ok befor we schedule.
+  emits a map. {:errors {} clchedule
+  errors : non existing reordering prop, non existing predecessors, and cycles."
+  [tasks
+   reordering-properties]
+  (let [reordering-errors (tasks-w-missing-properties tasks reordering-properties)
+        _ (println reordering-errors)
+        tasks-predecessors-errors (tasks-w-non-existent-predecessors tasks)
+        _ (println tasks-predecessors-errors)
+        tasks-graph (gen-all-precedence-edges tasks)
+        tasks-cycles (graph-cycles tasks-graph)
+        _ (println tasks-cycles)]
+
+    {:reordering-errors reordering-errors
+    :tasks-predecessors-errors tasks-predecessors-errors
+    :tasks-cycles tasks-cycles }))
+
+(defn schedule!
+  "the real over-master-uber-function to call. Gives you tasks with :begin,
+  just like you'd exepct, if errors =nil, or you can read errors instead."
+  [tasks
+   reordering-properties]
+
+  (let [errors (verif-tasks tasks reordering-properties)]
+    (if (every? nil? (vals errors))
+      {:error nil
+       :result (-> tasks
+                   (run-scheduler! reordering-properties)
+                   (format-tasks-in-output-schedule tasks))}
+
+      {:result nil
+       :errors (into {} (filter (comp not nil? val) errors))})))

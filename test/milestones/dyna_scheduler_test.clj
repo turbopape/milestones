@@ -2,31 +2,41 @@
   (:require [milestones.dyna-scheduler :refer :all])
   (:use expectations))
 
-(def tasks {1 {:task-name "A description about this task"
-               :resource-id 2
+(def tasks {1 {:task-name "Bring bread"
+               :resource-id "mehdi"
                :duration 5
                :priority 1
                :predecessors []}
 
-             2 {:task-name "A description about this task"
+             2 {:task-name "Bring butter"
               :resource-id "rafik"
               :duration 5
               :priority 1
               :predecessors []}
 
-             3 {:task-name "A description about this task"
-              :resource-id 4
+             3 {:task-name "Put butter on bread"
+              :resource-id "salma"
               :duration 3
               :priority 1
-              :predecessors []}
+              :predecessors [1 2]}
 
-             4 {:task-name "A description about this task"
-                :resource-id 4
-                :priority 1
-                :predecessors [2 4]}
-
-             5 {:task-name "A description about this task"
+             4 {:task-name "Eat toast"
                 :resource-id "rafik"
-                :duration 10
-                :priority 4
-                :predecessors [3]}})
+                :duration 4
+                :priority 1
+                :predecessors [3]}
+
+             5 {:task-name "Eat toast"
+                :resource-id "salma"
+                :duration 4
+                :priority 1
+                :predecessors [3]}
+
+                ;; now some milestones
+             6 {:task-name "Toasts ready"
+                 :resource-id :milestones
+                 :predecessors [3]
+
+              }
+
+})
