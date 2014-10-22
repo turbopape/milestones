@@ -53,7 +53,7 @@ you pass to it a map containing  tasks and a vector containing the
 properties you want the scheduler to use to give higher priorities to tasks (
 less is higher priority) like so
 
-        (schedule! tasks [:priority :duration])
+        (schedule tasks [:priority :duration])
 
 It gives you back tasks with begin fields, or an error map.
         {:error nil , :result {1 {**:begin** }}}
@@ -63,6 +63,8 @@ OR
              :tasks-cycles tasks-cycles
              :milestones-w-no-predecessors milestones-w-no-predecessors},
      :result nil}
+
+### Sample Case
 
 for example, if you have tasks def'd to:
 
@@ -163,14 +165,15 @@ Which you can pass to another program to render as a GANTT program (ours is comi
 You should have :achieved equal to :duration, or the program was not able to schedule all of the task - This
 should not happen by the way.
 
-Errors are :
- Error Map Key              | Sample value | What it means
------------------------------|--------------|---------------
-:reordering-errors |{ 1 [:missing-priority-field],...}| You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
-:tasks-predecessors-errors| [1 , 2....| these tasks have non-existent predecessors 
-:tasks-w-no-resources | [1,...| These tasks are no milestones and are not assigned to any resource
-:tasks-cycles |  ([1 2] [3 5]... | Couple of tasks that are in a cycle : 1 depends on 2, and 2 on 1
- :milestones-w-no-predecessors | [1 2...  | These milestones don't have predecessors
+### Errors 
+
+ Error Map Key                 |  What it means
+-------------------------------|-----------------------------
+:reordering-errors             | { 1 [:missing-priority-field],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
+:tasks-predecessors-errors     | [1 , 2.... these tasks have non-existent predecessors 
+:tasks-w-no-resources          | [1,... These tasks are no milestones and are not assigned to any resource
+:tasks-cycles                  | [[1 2] [3 5]... Couple of tasks that are in a cycle : 1 depends on 2, and 2 on 1
+:milestones-w-no-predecessors | [1 2...  | These milestones don't have predecessors
 
 
 ## History
