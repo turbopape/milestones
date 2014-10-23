@@ -10,7 +10,11 @@ Milestones - The Thinking Tasks Scheduler
 ![Automagical Tools Logo][Logo]
 [Logo]:./logo.jpg
 
-Milestones is Clojure library which only gets description about tasks and constraints, and automagically give you your best schedule.
+Milestones is a Clojure library That only needs your project tasks description in order to generate the best possible schedule for you, based on priorities of scheduling you set (in terms of fields in tasks, more about this in a second).
+
+Constraints are resource : i.e, which resource is needed to perform task, the task duration, and predecessors, i.e, which tasks need to be done before a particular task can be fired.
+
+Based on the above constraints specification, Milestones generates the Schedule if it does not detect scheduling errors, or tells you why it was not able to do so.
 
 Tasks are basically a map containing ids as keys and information about
 the tasks as values (maps). Here is an example :
@@ -186,10 +190,7 @@ Cup 2014. You can find the code and some technical explanation of the
 algorithms in use (core.async, etc...) 
 [here](https://github.com/turbopape/milestones-clojurecup2014).
 
-Although the protorype included the module for interpreting tasks
-written in natural english, Milestones the actual project will focus
-on scheduling. The Tasks interpreter and the Tasks renderer are
-projects of their own right.
+Although the protorype showcases the main idea, this repository is the official one, i.e, contains latest versions and is more thoroughly tested.
 
 ## License
 
