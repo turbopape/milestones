@@ -48,10 +48,10 @@ tasks map, with a :begin field, telling us when to begin each task.
 
 ## Usage
 
-You fire the library using the schedule! function , 
+You fire the library using the schedule function , 
 you pass to it a map containing  tasks and a vector containing the 
 properties you want the scheduler to use to give higher priorities to tasks (
-less is higher priority) like so
+less is higher priority) like so (if you want to schedule tasks with lower _:priority_ then lower _:duration_ first:
 
         (schedule tasks [:priority :duration])
 
@@ -68,7 +68,7 @@ OR
 
 for example, if you have tasks def'd to:
 
-        {1 {:task-name "Bring bread"
+	     { 1 {:task-name "Bring bread"
                    :resource-id "mehdi"
                    :duration 5
                    :priority 1
