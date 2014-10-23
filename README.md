@@ -106,7 +106,7 @@ for example, if you have tasks def'd to:
 
 you would want to run
 
-  (schedule tasks [:duration])
+	(schedule tasks [:duration])
 
 and you'd have :
 
