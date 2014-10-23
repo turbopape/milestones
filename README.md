@@ -14,7 +14,10 @@ Milestones - The Thinking Tasks Scheduler
 
 Milestones is a Clojure library That only needs your project tasks description in order to generate the best possible schedule for you, based on priorities of scheduling you set (in terms of fields in tasks, more about this in a second).
 
-Constraints are resource : i.e, which resource is needed to perform task, the task duration, and predecessors, i.e, which tasks need to be done before a particular task can be fired.
+Constraints on tasks are: 
+- Resource : i.e, which resource is needed to perform task, 
+- The task duration, 
+- And predecessors, i.e, which tasks need to be done before a particular task can be fired.
 
 Based on the above constraints specification, Milestones generates the Schedule if it does not detect scheduling errors, or tells you why it was not able to do so.
 
