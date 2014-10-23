@@ -6,12 +6,11 @@ Milestones - The Thinking Tasks Scheduler
 [![Gratipay](https://img.shields.io/gratipay/turbopape.svg)](https://gratipay.com/turbopape/)
 [![Paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=rafik%2enaccache%40gmail%2ecom&lc=US&item_name=Automagic%20Tools&item_number=automagictools&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHostedGuest)
 
+<img src="./logo.jpg"
+ alt="Automagic logo" title="The Robot and the Bunnyf" align="right" />
 
-![Automagical Tools Logo][Logo]
-[Logo]:./logo.jpg
-
->"Any sufficiently advanced technology is indistinguishable from magic"
->>[Clarke's 3rd Law](https://en.wikipedia.org/wiki/Clarke%27s_three_laws)
+> "Any sufficiently advanced technology is indistinguishable from magic"
+- According to Clarke's 3rd Law
 
 Milestones is a Clojure library That only needs your project tasks description in order to generate the best possible schedule for you, based on priorities of scheduling you set (in terms of fields in tasks, more about this in a second).
 
