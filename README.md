@@ -169,7 +169,7 @@ and you'd have :
        :is-milestone true}}}
 
 Which you can pass to another program to render as a GANTT program (ours is coming soon.)
-You should have :achieved equal to :duration, or the program was not able to schedule all of the task - This
+You should have _:achieved_ equal to _:duration_, or Milestones was not able to schedule all of the task - This
 should not happen by the way.
 
 ### Errors 
