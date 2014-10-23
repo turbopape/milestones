@@ -67,7 +67,9 @@ less is higher priority) like so (if you want to schedule tasks with lower _:pri
 It gives you back tasks with begin fields, or an error 
   
        {:error nil , :result {1 {**:begin** }}}
-OR
+
+       OR
+
        {:error {:reordering-errors reordering-errors
              :tasks-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
