@@ -19,10 +19,10 @@ Constraints on tasks are:
 - The task duration, 
 - And predecessors, i.e, which tasks need to be done before a particular task can be fired.
 
-Based on the above constraints specification, Milestones generates the Schedule if it does not detect scheduling errors, or tells you why it was not able to do so.
+Based on the above constraints specification, Milestones generates the Schedule if it does not detect scheduling errors, or shows you th errors.
 
 Tasks are basically a map containing ids as keys and information about
-the tasks as values (maps). Here is an example :
+the tasks as values containing maps of task fields pointing to values. Here is an example :
 
         { 1 { :task-name "A description about this task" 
         :resource-id 2 
@@ -64,10 +64,11 @@ less is higher priority) like so (if you want to schedule tasks with lower _:pri
 
         (schedule tasks [:priority :duration])
 
-It gives you back tasks with begin fields, or an error map.
-        {:error nil , :result {1 {**:begin** }}}
+It gives you back tasks with begin fields, or an error 
+  
+  {:error nil , :result {1 {**:begin** }}}
 OR
-      {:error {:reordering-errors reordering-errors
+   {:error {:reordering-errors reordering-errors
              :tasks-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
              :milestones-w-no-predecessors milestones-w-no-predecessors},
