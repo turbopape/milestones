@@ -60,19 +60,19 @@ tasks map, with a :begin field, telling us when to begin each task.
 You fire the library using the schedule function , 
 you pass to it a map containing  tasks and a vector containing the 
 properties you want the scheduler to use to give higher priorities to tasks (
-less is higher priority) like so (if you want to schedule tasks with lower _:priority_ then lower _:duration_ first:
+less is higher priority) like so (if you want to schedule tasks with lower _:priority_ and lower _:duration_ first)
 
         (schedule tasks [:priority :duration])
 
 It gives you back tasks with begin fields, or an error 
   
-  {:error nil , :result {1 {**:begin** }}}
+       {:error nil , :result {1 {**:begin** }}}
 OR
-   {:error {:reordering-errors reordering-errors
+       {:error {:reordering-errors reordering-errors
              :tasks-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
              :milestones-w-no-predecessors milestones-w-no-predecessors},
-     :result nil}
+             :result nil}
 
 ### Sample Case
 
