@@ -195,7 +195,7 @@ algorithms in use (core.async, etc...)
 
 Although the protorype showcases the main idea, this repository is the official one, i.e, contains latest versions and is more thoroughly tested.
 
-## License
+## License and Credits
 
 Copyright © 2014 rafik Naccache and Contributors.
 
@@ -203,3 +203,5 @@ Distributed under the GNU GPL v3.
 
 All used Libraries in this project (see project.clj) pertain to their
 respective authors and their respective licenses apply.
+
+The automagic Logo is created by my friend Chakib Daoud.
