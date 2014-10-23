@@ -199,7 +199,7 @@ Although the protorype showcases the main idea, this repository is the official 
 
 ## License and Credits
 
-Copyright © 2014 rafik Naccache and Contributors.
+Copyright © 2014 Rafik Naccache and Contributors.
 
 Distributed under the GNU GPL v3.
 
