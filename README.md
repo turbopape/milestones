@@ -25,7 +25,7 @@ Tasks are basically a map containing ids as keys and information about
 the tasks as values containing maps of task fields pointing to values. Here is an example :
 
 
- { 1 { :task-name "A description about this task" 
+      { 1 { :task-name "A description about this task" 
         :resource-id 2 
         :duration 5 :priority 1 }
     
@@ -51,11 +51,11 @@ The output of Milestones is a schedule, that is, if it's possible, the
 tasks map, with a :begin field, telling us when to begin each task.
 	
 
-{ 1 { :task-name "A description about this task" :resource-id 2
+        { 1 { :task-name "A description about this task" :resource-id 2
 		:duration 5 :priority 1 **:begin 0**}
 
-	  2 {:task-name "A description about this task" :resource-id 1
-        :duration 4 :priority 1 :predecessors [1] **:begin 5**}}
+	   2 {:task-name "A description about this task" :resource-id 1
+              :duration 4 :priority 1 :predecessors [1] **:begin 5**}}
 
 
 ## Usage
@@ -72,12 +72,12 @@ less is higher priority) like so (if you want to schedule tasks with lower _:pri
 It gives you back tasks with begin fields, or an error 
   
 
- {:error nil , :result {1 {**:begin** }}}
+     {:error nil , :result {1 {**:begin** }}}
 
 
-       OR
+ OR
 
-       {:error {:reordering-errors reordering-errors
+     {:error {:reordering-errors reordering-errors
              :tasks-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
              :milestones-w-no-predecessors milestones-w-no-predecessors},
