@@ -24,7 +24,8 @@ Based on the above constraints specification, Milestones generates the Schedule 
 Tasks are basically a map containing ids as keys and information about
 the tasks as values containing maps of task fields pointing to values. Here is an example :
 
-        { 1 { :task-name "A description about this task" 
+´´´Clojure
+ { 1 { :task-name "A description about this task" 
         :resource-id 2 
         :duration 5 :priority 1 }
     
@@ -33,6 +34,7 @@ the tasks as values containing maps of task fields pointing to values. Here is a
           :duration 4 
           :priority 1 
           :predecessors [1]} }
+´´´
 
 Milestones tries to detect any circular dependencies, that is, tasks
 that depend on themselves or on tasks that end up depending on
@@ -48,12 +50,13 @@ They must have predecessors, else they will be reported as erroneous.
 The output of Milestones is a schedule, that is, if it's possible, the
 tasks map, with a :begin field, telling us when to begin each task.
 	
-	{ 1 { :task-name "A description about this task" :resource-id 2
+´´´Clojure
+{ 1 { :task-name "A description about this task" :resource-id 2
 		:duration 5 :priority 1 **:begin 0**}
 
 	  2 {:task-name "A description about this task" :resource-id 1
         :duration 4 :priority 1 :predecessors [1] **:begin 5**}}
-
+´´´
 
 ## Usage
 
@@ -62,24 +65,30 @@ you pass to it a map containing  tasks and a vector containing the
 properties you want the scheduler to use to give higher priorities to tasks (
 less is higher priority) like so (if you want to schedule tasks with lower _:priority_ and lower _:duration_ first)
 
+´´´Clojure
         (schedule tasks [:priority :duration])
+´´´
 
 It gives you back tasks with begin fields, or an error 
   
-       {:error nil , :result {1 {**:begin** }}}
+´´´Clojure
+ {:error nil , :result {1 {**:begin** }}}
+´´´
 
        OR
-
+´´´Clojure
        {:error {:reordering-errors reordering-errors
              :tasks-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
              :milestones-w-no-predecessors milestones-w-no-predecessors},
              :result nil}
+´´´
 
 ### Sample Case
 
 for example, if you have tasks def'd to:
 
+´´´Clojure
 	     { 1 {:task-name "Bring bread"
                    :resource-id "mehdi"
                    :duration 5
@@ -115,13 +124,15 @@ for example, if you have tasks def'd to:
                     :is-milestone true
                      :predecessors [3]
                   }}
-
+´´´
 you would want to run
-
+´´´Clojure
 	(schedule tasks [:duration])
+´´´
 
 and you'd have :
 
+´´´Clojure
      {:error nil,
        :result
        {1
@@ -172,6 +183,7 @@ and you'd have :
        :begin 9,
        :task-name "Toasts ready",
        :is-milestone true}}}
+´´´
 
 Which you can pass to another program to render as a GANTT program (ours is coming soon.)
 You should have _:achieved_ equal to _:duration_, or Milestones was not able to schedule all of the task - This
