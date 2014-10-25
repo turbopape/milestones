@@ -141,8 +141,8 @@ and you'd have :
 
 ```Clojure
      {:error nil,
-       :result
-        {
+       :result {
+      ;;tasks with :begin field, i.e at what time shall they be fired.
       1 
       {:achieved 5,
        :begin 1,
