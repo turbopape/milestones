@@ -67,7 +67,7 @@
     (catch Exception e 1)))
 
 (defn task-complete?
-  "returns true if task is complete"
+  "Returns true if task is complete"
   [tasks
    output-schedule
    the-task-id]
@@ -77,18 +77,17 @@
      1))
 
 (defn work-in-progress-count
-  "work in progress is a task at the peek of the work flow [ 1 1 2 2 2 ...],
-  that a resource begun treating went to the channel. in the non preemptive
-  mode, we don't involve this task in the reordering.
-  However, if the length of this task is equal to the original task duration,
-  it has not yet been processed, and then can be preempted"
+  "Work in progress is a task at the peek of the work flow [ 1 1 2 2 2 ...],
+  that a resource begun treating went to the channel. Once a task is Work in progress,
+  it is not involved in the reordering of tasks, unless its length 
+  is equal to the original task duration : it has not yet been processed."
   [work-flow
    the-task-id]
   (count (take-while #(= the-task-id %)
                      (reverse work-flow))))
 
 (defn task-in-work-in-progress?
-  "returns true if task is work-in-progress,
+  "Returns true if task is work-in-progress,
   i.e, is in the head of the work queue, and is not at full length"
   [tasks
    work-flow
@@ -99,10 +98,10 @@
                wp-count))))
 
 (defn all-predecessors-complete?
-  "a predicate that returns true if all predecessors have been completed "
+  "A predicate that returns true if all predecessors have been completed "
   [tasks
    output-schedule
-  task-id]
+   task-id]
 
   (let [the-task (get tasks task-id)
         preds (get the-task :predecessors)]
@@ -113,8 +112,7 @@
             preds)))
 
 (defn find-fireable-tasks
- "finds which tasks can be fired based on their predecessors."
- ;;TODO : Can be made more general using a vector of predicates
+ "Finds which tasks can be fired based on their predecessors."
   [tasks
    output-schedule]
   (into []
@@ -122,7 +120,7 @@
                 (keys tasks))))
 
 (defn properties
-  "from the joy of clojure. Knew I was going to use it someday!
+  "Inspired from the joy of clojure. Knew I was going to use it someday!
   This yields a function which, applied to each task by sort-by,
   will generate vector of values used to order the tasks
   don't forget we have rows with indices, {1 {:order ...}"
@@ -134,9 +132,9 @@
             property-names ))))
 
 (defn reorder-tasks
-  "sort task by the order of the properties given in the property-names
+  "Sort tasks according to properties given in the property-names
   vector. As it is a vector, accessing from right is more effcient. as more
-  proprieatry comes first, i.e on left of the vector, we need to reverse
+  urgent comes first, i.e on left of the vector, we need to reverse
   the result to put highest priority to the right."
   [tasks
    property-names]
@@ -150,8 +148,8 @@
   (filter #(= resource-id (:resource-id (val %))) tasks))
 
 (defn task-sched-time-vector
-  "given an output-schedule, and a task-id
-  you get a time-vector of the task as present in the output schedule"
+  "Given an output-schedule, and a task-id you get a time-vector 
+  of the task as present in the output schedule"
   [output-schedule
    task-id]
   (->> output-schedule
@@ -162,7 +160,7 @@
 
 
 (defn format-a-task-in-output-schedule
-  "given a task, we compute its current time vector
+  "Given a task, we compute its current time vector
   and inject begin-time and completion ratio in it"
   [output-schedule
    a-task]
@@ -177,14 +175,14 @@
 
 
 (defn format-tasks-in-output-schedule
-  "given an output schedule :
+  "Given an output schedule :
   [{:task-id 1 :time 1 :resource-id 1}
   {:task-id 3 :time 1 :resource-id 1}
   {:task-id 1 :time 2 :resource-id 1}
   {:task-id 3 :time 2 :resource-id 1}
-    {:task-id 3 :time 3 :resource-id 1}]
-    we find start-time, completion rate for each task and then we return
-    a scheduled version of tasks. {1 {:begin 2 :completion-rate 2/5....})"
+  {:task-id 3 :time 3 :resource-id 1}]
+  we find start-time, completion rate for each task and then we return
+  a scheduled version of tasks. {1 {:begin 2 :completion-rate 2/5....})"
   [output-schedule
    tasks]
   (into {}
@@ -259,7 +257,7 @@
     (go (>! chan-to-output the-task-unit))))
 
 (defn total-task-duration
-  "to compute total tasks duration"
+  "Computes total tasks duration as if they were done sequentially."
   [tasks]
   (->> tasks
        ( vals)
@@ -301,15 +299,16 @@
 
 
 (defn missing-prop-for-task
-  "given a task ({:prop ...}) and a vector of properties
+  "Given a task ({:prop ...}) and a vector of properties
   returns missing properties for task"
   [task
     reordering-properties]
   (vec (filter (comp not nil?)
                (map #(if ((comp not (partial contains? task)) % ) %)
                     reordering-properties))))
-  (defn tasks-w-missing-properties
-  "returns a map, with task-id and a vector of missing property"
+  
+(defn tasks-w-missing-properties
+  "Returns a map, with task-id and a vector of missing property"
   [tasks
    reordering-properties]
     (into {} (for [[id t] tasks
@@ -319,23 +318,25 @@
                {id missing-props})))
 
 (defn tasks-w-not-found-predecessors
+  "Returns the Tasks with predecessors not declared as tasks elsewhere in the tasks definition."
   [tasks]
   (keys (filter
           (fn [[_ t]] (not (predecessors-of-task-exist? tasks
                                                         t)))
           tasks)))
 
-
 (defn tasks-w-no-field
-  "which tasks don't have field or have field empty"
+  "Which tasks don't have Field field."
   [tasks field]
    (filter (comp  not field val) tasks))
 
 (defn tasks-w-empty-predecessors
   [tasks]
   (vec (keys (into {} (filter (comp empty? val)
-  (into {} (map (fn [[id t]] {id (:predecessors t)} ) tasks )))))))
-
+                              (into {} 
+                                    (map 
+                                         (fn [[id t]] {id (:predecessors t)}) 
+                                         tasks)))))))
 
 (defn errors-on-tasks
   "verif if there-s something wrong before we schedule.
