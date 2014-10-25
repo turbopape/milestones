@@ -87,7 +87,7 @@ Or:
              :tasks-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
              :milestones-w-no-predecessors milestones-w-no-predecessors},
-             :result nil}
+     :result nil}
 ```
 
 ### Sample Case
@@ -141,7 +141,7 @@ and you'd have :
 
 ```Clojure
      {:error nil,
-       :result {
+      :result {
       ;;tasks with :begin field, i.e at what time shall they be fired.
       1 
       {:achieved 5,
