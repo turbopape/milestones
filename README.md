@@ -41,7 +41,7 @@ that depend on themselves or on tasks that end up depending on
 themselves, actually, the tasks definition must be a directed non
 cyclical graph.
 
-Tasks (that are not milestones) without resource-ids won't be scheduled.Maybe we'll issue a warning for such tasks.
+Tasks (that are not milestones) without resource-ids won't be scheduled. Those will be reported as erroneous.
 
 Special tasks with  :is-milestone "whatever" are milestones, they are assigned a random user
 and a duration 1, so they can enter the computation like ordinary tasks. 
@@ -193,7 +193,7 @@ and you'd have :
        :is-milestone true}}}
 ```
 
-Which you can pass to another program to render as a GANTT program (ours is coming soon.)
+Which you can pass to another program to render as a GANTT diagram (ours is coming soon.)
 You should have _:achieved_ equal to _:duration_, or Milestones was not able to schedule all of the task - This
 should not happen by the way.
 
