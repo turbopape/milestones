@@ -385,7 +385,7 @@
   (let [errors (errors-on-tasks tasks
                                 reordering-properties)]
     (if (every? (comp nil? seq) (vals errors))
-      {:error nil
+      {:errors nil
        :result (let [curated-tasks (prepare-tasks tasks)]
                  (-> curated-tasks
                      (run-scheduler reordering-properties)
