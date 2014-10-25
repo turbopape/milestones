@@ -77,13 +77,13 @@ less is higher priority) like so (if you want to schedule tasks with lower _:pri
 It gives you back tasks with begin fields, or an error 
   
 ```Clojure
-    {:error nil , :result {1 {**:begin** }}}
+    {:errors nil , :result {1 {**:begin** }}}
 ```
 
 Or:
  
 ```Clojure
-    {:error {:reordering-errors reordering-errors
+    {:errors {:reordering-errors reordering-errors
              :tasks-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
              :milestones-w-no-predecessors milestones-w-no-predecessors},
