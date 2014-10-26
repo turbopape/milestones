@@ -62,7 +62,7 @@ tasks map, with a :begin field, telling us when to begin each task.
      :predecessors [1] :begin 5}}
 ```
 ## Installation
-You can grab  it from clojars, using leiningen
+You can grab  it from clojars, using Leiningen, putting the dep. in your project.clj:
 
 [![Clojars Project](http://clojars.org/automagic-tools-milestones/latest-version.svg)](http://clojars.org/automagic-tools-milestones)
 
