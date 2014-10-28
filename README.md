@@ -204,7 +204,7 @@ should not happen by the way.
 
  Error Map Key                 |  What it means
 -------------------------------|-----------------------------
-:reordering-errors             | { 1 [:missing-priority-field],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
+:reordering-errors             | { 1 [:priority],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
 :tasks-w-predecessors-errors   | :{6 [13],...} these tasks have these non-existent predecessors.
 :tasks-w-no-resources          | [1,... These tasks are no milestones and are not assigned to any resource
 :tasks-cycles                  | [[1 2] [3 5]... Couple of tasks that are in a cycle : 1 depends on 2, and 2 on 1
@@ -214,12 +214,12 @@ should not happen by the way.
 ## History
 
 The concept of auto-magic project scheduling is inspired from **the great**
-[Taskjuggler](http://www.taskjuggler.org). 
+[Taskjuggler.](http://www.taskjuggler.org). 
 
 A first prototype of Milestones was built as an entry to the Clojure
 Cup 2014. You can find the code and some technical explanation of the
 algorithms in use (core.async, etc...) 
-[here](https://github.com/turbopape/milestones-clojurecup2014).
+[here.](https://github.com/turbopape/milestones-clojurecup2014)
 
 Although the protorype showcases the main idea, this repository is the official one, i.e, contains latest versions and is more thoroughly tested.
 
