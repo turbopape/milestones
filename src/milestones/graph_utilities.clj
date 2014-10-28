@@ -6,7 +6,6 @@
   (:require
     [loom.graph :refer [digraph nodes]]
     [loom.alg :refer [bf-path]]
-    [loom.io :refer [view]]
     [clojure.math.combinatorics :refer [combinations]]))
 
 (defn predecessors-of-task-exist?

@@ -367,7 +367,6 @@
         non-milestone-tasks (into {} (tasks-w-no-field tasks :is-milestone))
         reordering-errors (tasks-w-missing-properties non-milestone-tasks
                                                       reordering-properties)
-        tasks-predecessors-errors (tasks-w-not-found-predecessors tasks)
         tasks-graph (gen-all-precedence-edges tasks)
         tasks-cycles (graph-cycles tasks-graph)
         milestones-w-no-predecessors (tasks-w-no-field milestone-tasks
@@ -397,7 +396,7 @@
   (into tasks curated-milestone-tasks)))
 
 (defn schedule
-  "the real over-master-uber-function to call. Gives you tasks with :begin,
+  "The real over-master-uber-function to call. Gives you tasks with :begin,
   just like you'd exepct, if errors =nil, or you can read errors instead."
   [tasks
    reordering-properties]

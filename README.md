@@ -205,10 +205,10 @@ should not happen by the way.
  Error Map Key                 |  What it means
 -------------------------------|-----------------------------
 :reordering-errors             | { 1 [:missing-priority-field],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
-:tasks-w-predecessors-errors     | :{6 [13],...} these tasks have these non-existent predecessors.
+:tasks-w-predecessors-errors   | :{6 [13],...} these tasks have these non-existent predecessors.
 :tasks-w-no-resources          | [1,... These tasks are no milestones and are not assigned to any resource
 :tasks-cycles                  | [[1 2] [3 5]... Couple of tasks that are in a cycle : 1 depends on 2, and 2 on 1
-:milestones-w-no-predecessors | [1 2...  | These milestones don't have predecessors
+:milestones-w-no-predecessors  | [1 2...  These milestones don't have predecessors
 
 
 ## History
@@ -225,11 +225,11 @@ Although the protorype showcases the main idea, this repository is the official 
 
 ## License and Credits
 
-Copyright © 2014 Rafik Naccache and Contributors.
+Copyright © 2014 Rafik Naccache and [Contributors.](./CONTRIBUTORS.md)
 
 Distributed under the GNU GPL v3.
 
 All used Libraries in this project (see project.clj) pertain to their
 respective authors and their respective licenses apply.
 
-The automagic Logo is created by my friend Chakib Daoud.
+The Automagic Logo - Labeled "The Robot and The Bunny" is created by my friend Chakib Daoud.

@@ -2,7 +2,7 @@
   (:require [milestones.dyna-scheduler :refer :all])
   (:use expectations))
 
-(def tasks {1 {:task-name "Bring bread"
+(def correct-tasks {1 {:task-name "Bring bread"
                :resource-id "mehdi"
                :duration 5
                :priority 1
@@ -38,4 +38,22 @@
                  :predecessors [3]
               }})
 
-;; TODO - write tests with begin and errors etc...
+
+(def correct-tasks-schedule
+  (schedule correct-tasks  [:priority]))
+
+;; some tests, we sure can do more of them
+
+;; test if correct-tasks-schedule :errors is nil
+(expect true (nil? (:error correct-tasks-schedule)))
+
+;; test if task 6 is scheduled after 3
+(expect true
+        (>
+        (->
+          :begin
+          ((:result correct-tasks-schedule) 6))
+        (->
+          :begin
+          ((:result correct-tasks-schedule) 3))))
+
