@@ -337,10 +337,29 @@
                                     (map 
                                          (fn [[id t]] {id (:predecessors t)}) 
                                          tasks)))))))
+(defn not-found-task?
+  "If task id is not in tasks, return true"
+  [tasks task-id]
+  (not
+   (contains?
+    (set  (keys tasks))
+    task-id)))
+
+(defn tasks-w-non-existent-predecessors
+  "Given Tasks, emits a detailed info on whom tasks are having non existent 
+  predecessors"
+  [tasks]
+  (into {}
+        (filter
+         (comp seq #(get % 1))
+         (map (fn [[id t]]
+                [id (vec  (filter (partial not-found-task? tasks)
+                                  (:predecessors t)))])
+              tasks))))
 
 (defn errors-on-tasks
   "verif if there-s something wrong before we schedule.
-  emits a map. {:errors {} clchedule
+  emits a map. {:errors {} :results schedule
   errors : non existing reordering prop, non existing predecessors, and cycles."
   [tasks
    reordering-properties]
@@ -356,7 +375,7 @@
         tasks-w-no-resources (tasks-w-no-field non-milestone-tasks
                                                :resource-id)]
     {:reordering-errors reordering-errors
-     :tasks-predecessors-errors (into [] tasks-predecessors-errors)
+     :tasks-w-predecessors-errors (tasks-w-non-existent-predecessors tasks)
      :tasks-w-no-resources (into [] (keys tasks-w-no-resources))
      :tasks-cycles tasks-cycles
      :milestones-w-no-predecessors  (into (into [] (keys milestones-w-no-predecessors))

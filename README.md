@@ -87,7 +87,7 @@ Or:
  
 ```Clojure
     {:errors {:reordering-errors reordering-errors
-             :tasks-predecessors-errors tasks-predecessors-errors
+             :tasks-w-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
              :milestones-w-no-predecessors milestones-w-no-predecessors},
      :result nil}
@@ -205,7 +205,8 @@ should not happen by the way.
  Error Map Key                 |  What it means
 -------------------------------|-----------------------------
 :reordering-errors             | { 1 [:missing-priority-field],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
-:tasks-predecessors-errors     | [1 , 2.... these tasks have non-existent predecessors 
+:tasks-w-predecessors-errors     | :{6 [13],...} these tasks have
+these non-existent predecessors.
 :tasks-w-no-resources          | [1,... These tasks are no milestones and are not assigned to any resource
 :tasks-cycles                  | [[1 2] [3 5]... Couple of tasks that are in a cycle : 1 depends on 2, and 2 on 1
 :milestones-w-no-predecessors | [1 2...  | These milestones don't have predecessors
