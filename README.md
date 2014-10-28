@@ -55,6 +55,7 @@ tasks map, with a :begin field, telling us when to begin each task.
       :duration 5 
       :priority 1 
       :begin 0}
+      
   2 {:task-name "A description about this task" 
      :resource-id 1
      :duration 4 
@@ -80,7 +81,9 @@ less is higher priority) like so (if you want to schedule tasks with lower _:pri
 It gives you back tasks with begin fields, or an error 
   
 ```Clojure
-    {:errors nil , :result {1 {**:begin** }}}
+    {:errors nil
+    
+    :result {1 {**:begin** }}}
 ```
 
 Or:
@@ -89,7 +92,8 @@ Or:
     {:errors {:reordering-errors reordering-errors
              :tasks-w-predecessors-errors tasks-predecessors-errors
              :tasks-cycles tasks-cycles
-             :milestones-w-no-predecessors milestones-w-no-predecessors},
+             :milestones-w-no-predecessors milestones-w-no-predecessors}
+             
      :result nil}
 ```
 
