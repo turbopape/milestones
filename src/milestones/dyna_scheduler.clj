@@ -93,7 +93,7 @@
    work-flow
    the-task-id]
   (let [wp-count (work-in-progress-count work-flow the-task-id)]
-    (and (> wp-count 0)
+    (and (pos? 0)
          (not= (get (tasks the-task-id) :duration)
                wp-count))))
 
@@ -115,9 +115,9 @@
  "Finds which tasks can be fired based on their predecessors."
   [tasks
    output-schedule]
-  (into []
-        (filter (partial all-predecessors-complete? tasks output-schedule)
-                (keys tasks))))
+  (vec
+   (filter (partial all-predecessors-complete? tasks output-schedule)
+           (keys tasks))))
 
 (defn properties
   "Inspired from the joy of clojure. Knew I was going to use it someday!
@@ -126,10 +126,10 @@
   don't forget we have rows with indices, {1 {:order ...}"
   [property-names]
   (fn [row-with-index]
-    (into []
-          (mapcat
-            #(map (comp % val) row-with-index )
-            property-names ))))
+    (vec
+     (mapcat
+      #(map (comp % val) row-with-index)
+      property-names ))))
 
 (defn reorder-tasks
   "Sort tasks according to properties given in the property-names
@@ -138,9 +138,9 @@
   the result to put highest priority to the right."
   [tasks
    property-names]
-  (into [] (reverse
-             (mapcat keys (sort-by (properties property-names)
-                                 (map (fn [[k v]] {k v}) tasks))))))
+  (vec (reverse
+        (mapcat keys (sort-by (properties property-names)
+                              (map (fn [[k v]] {k v}) tasks))))))
 
 (defn tasks-for-resource
   "Given a user-id, give you all tasks for this user (with all infos)"
@@ -167,7 +167,7 @@
   (let [ [k v] a-task
          the-tv (task-sched-time-vector output-schedule k)]
 
-    (if (not (empty? the-tv))
+    (if (seq the-tv)
       [k (-> v
              (assoc :begin (apply min the-tv))
              (assoc :achieved (count the-tv)))]
@@ -217,7 +217,7 @@
                                                   tasks
                                                   current-work-flow)
                                          his-incomplete-fireable-tasks-ids))
-        wp-vector (into [] (repeat (work-in-progress-count current-work-flow
+        wp-vector (vec (repeat (work-in-progress-count current-work-flow
                                                            fireable-id-in-wp)
                                    fireable-id-in-wp))
         ;; [ the part to be reordered and generated]
@@ -251,7 +251,7 @@
          the-task-unit {:task-id (peek my-workflow)
                         :time timer
                         :resource-id resource-id}
-         _ (if (not (empty? my-workflow))
+         _ (if (seq my-workflow)
              (alter workflows assoc resource-id (pop my-workflow)))]
              ;; now we inject the task-unit in the channel
     (go (>! chan-to-output the-task-unit))))
@@ -275,7 +275,7 @@
         max-time (* 2 (total-task-duration tasks))
         workflows (ref {})
         output-schedule (ref [])
-        resources-ids (into #{} (map :resource-id (vals tasks)))]
+        resources-ids (set (map :resource-id (vals tasks)))]
     (dosync
       (while
           (and (< @timer max-time)
@@ -314,7 +314,7 @@
     (into {} (for [[id t] tasks
                    :let [missing-props (missing-prop-for-task t
                                                               reordering-properties)]
-                   :when (not (empty? missing-props))]
+                   :when (seq missing-props)]
                {id missing-props})))
 
 (defn tasks-w-not-found-predecessors

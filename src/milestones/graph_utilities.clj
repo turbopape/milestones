@@ -19,7 +19,7 @@
 (defn task-has-predecessors?
   "return true if this task has preds"
   [the-task]
-  (not (empty? (:predecessors the-task))))
+  (seq (:predecessors the-task)))
 
 (defn gen-precendence-edge
   "a utility function, given 1 + [ 2 3] returns [1 2], [1 3]"
