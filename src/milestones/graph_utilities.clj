@@ -1,6 +1,20 @@
-;;; this NS is for creating tools to manipluate graphs :
-;;; generate edges from tasks, finding cycles, to see if a task depends eventually
-;;; on itself
+;;    <Graph Utilities - Part of Automagic Tools / Milestones>
+;;    Copyright (C) 2014 , Rafik NACCACHE <rafik@automagic.tools>
+
+;; This program is free software: you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation, either version 3 of
+;; the License, or (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public
+;; License along with this program.  If not, see
+;; <http://www.gnu.org/licenses/>.
+
 
 (ns milestones.graph-utilities
   (:require
@@ -43,5 +57,3 @@
     (mapv vec (filter (fn [[l r]] (and  (seq (bf-path di-graph l r))
                               (seq (bf-path di-graph r l))) )
                       all-paths))))
-
-
