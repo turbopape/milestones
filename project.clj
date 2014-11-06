@@ -1,4 +1,4 @@
-(defproject automagic-tools-milestones "0.1.3"
+(defproject automagic-tools-milestones "0.1.4"
   :description "Milestones : the Automagic Project Tasks Scheduler"
   :url "http://automagic.tools/milestones"
   :license {:name "GNU GPL v3.0"
