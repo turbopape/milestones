@@ -310,7 +310,7 @@
                                        reordering-properties
                                        c-to-me))
         (dotimes [_ (count resources-ids)]
-          (alter output-schedule conj (<!! (go (<! c-to-me)))))))
+          (alter output-schedule conj (<!! c-to-me)))))
     @output-schedule))
 
 
@@ -358,7 +358,7 @@
   [tasks task-id]
   (not
    (contains?
-    (set  (keys tasks))
+    (set (keys tasks))
     task-id)))
 
 (defn tasks-w-non-existent-predecessors
@@ -407,8 +407,10 @@
 (defn prepare-tasks
   "Adds random user-ids and duration=1 to milestones tasks"
 [tasks]
-(let [milestone-tasks (filter (comp :is-milestone val) tasks)
-      curated-milestone-tasks (map (fn [[id t]] [id (prepare-milestone t)]) milestone-tasks)]
+(let [milestone-tasks (filter (comp :is-milestone val)
+                              tasks)
+      curated-milestone-tasks (map (fn [[id t]] [id (prepare-milestone t)])
+                                   milestone-tasks)]
   (into tasks curated-milestone-tasks)))
 
 (defn schedule
