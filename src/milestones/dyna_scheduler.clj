@@ -286,12 +286,12 @@
   and then goes home"
   [tasks
    reordering-properties]
-  (let [c-to-me (chan)
-        timer (ref 0)
+  (let [timer (ref 0)
         max-time (* 2 (total-task-duration tasks))
         workflows (ref {})
         output-schedule (ref [])
-        resources-ids (set (map :resource-id (vals tasks)))]
+        resources-ids (set (map :resource-id (vals tasks)))
+        c-to-me (chan (count resources-ids))]
     (dosync
       (while
           (and (< @timer max-time)
