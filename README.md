@@ -65,6 +65,7 @@ tasks map, with a :begin field, telling us when to begin each task. (Time is dep
 ## Installation
 
 You can grab  it from clojars. Using Leiningen, you put the dependency in the **:dependencies** section in your project.clj:
+
 [![Clojars Project](http://clojars.org/automagic-tools-milestones/latest-version.svg)](http://clojars.org/automagic-tools-milestones)
 
 
