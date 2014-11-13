@@ -18,10 +18,13 @@ Constraints on tasks are:
 - The task duration, 
 - And predecessors, i.e, which tasks need to be done before a particular task can be fired.
 
-Based on the above constraints specification, Milestones generates the Schedule if it does not detect scheduling errors, or shows you these errors if any.
+Based on the above constraints specification, Milestones generates the
+Schedule if it does not detect scheduling errors, or shows you what it
+does not like.
 
 Tasks are basically a map containing IDs as keys and information about
-the tasks as values - containing maps of task fields pointing to values- Here is an example :
+the tasks as values - Information about a task is itself a  map of
+associating fields to values- Here is an example :
 
 ```Clojure
 { 1 { :task-name "A description about this task" 
@@ -36,7 +39,7 @@ the tasks as values - containing maps of task fields pointing to values- Here is
 ```
 
 Milestones tries to detect any circular dependencies, that is, tasks
-that depend on themselves or on tasks that end up depending on
+that depend on themselves or tasks that end up depending on
 themselves; actually, the tasks definition must be a directed non
 cyclical graph.
 
@@ -73,8 +76,9 @@ You can grab  it from clojars. Using Leiningen, you put the dependency in the **
 
 You fire the library using the **schedule** function , 
 you pass to it a map containing  tasks and a vector containing the 
-properties you want the scheduler to prioritize the tasks according to
-priorities at left are considered first, less value is higher priority) like so (if you want to schedule tasks with lower _:priority_ and lower _:duration_ first)
+properties you want the scheduler to prioritize the tasks according to.
+Priorities at left are considered first, less is scheduled first. Say
+you want to schedule tasks with lower _:priority_ and then lower _:duration_ first:
 
 ```Clojure
     (schedule tasks [:priority :duration])
