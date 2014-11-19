@@ -8,5 +8,8 @@
                  [org.clojure/math.combinatorics "0.0.8"]
                  [aysylu/loom "0.5.0"]
                  [expectations "2.0.9"]]
+  :scm {:name "git"
+        :url "https://github.com/automagictools/milestones.git"}
+
   :profiles {:uberjar {:aot :all}
              :dev {:plugins [[lein-expectations "0.0.8"]]}})

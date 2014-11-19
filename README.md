@@ -31,7 +31,7 @@ associating fields to values- Here is an example :
       :resource-id 2 
       :duration 5 :priority 1}
     
-   2 {:task-name "A description about this task" 
+v   2 {:task-name "A description about this task" 
       :resource-id 1 
       :duration 4 
       :priority 1 
