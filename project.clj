@@ -10,6 +10,5 @@
                  [expectations "2.0.9"]]
   :scm {:name "git"
         :url "https://github.com/automagictools/milestones.git"}
-
   :profiles {:uberjar {:aot :all}
              :dev {:plugins [[lein-expectations "0.0.8"]]}})
