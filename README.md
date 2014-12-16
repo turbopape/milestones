@@ -247,3 +247,5 @@ All used Libraries in this project (see project.clj) pertain to their
 respective authors and their respective licenses apply.
 
 The Automagic Logo - Labeled "The Robot and The Bunny" is created by my friend Chakib Daoud.
+
+This project is using an Open-Source version of [Intellij Idea Ultimate Edition](https://www.jetbrains.com/idea/whatsnew/), courtesy of JetBrains [s.r.o.](https://www.jetbrains.com/company/) Many thanks to these highly talented and generous guys.
