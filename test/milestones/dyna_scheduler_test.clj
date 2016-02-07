@@ -56,4 +56,3 @@
         (->
           :begin
           ((:result correct-tasks-schedule) 3))))
-

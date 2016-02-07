@@ -3,10 +3,10 @@
   :url "http://automagic.tools/milestones"
   :license {:name "GNU GPL v3.0"
             :url "https://www.gnu.org/licenses/gpl.html"}
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [org.clojure/math.combinatorics "0.0.8"]
-                 [aysylu/loom "0.5.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/core.async "0.2.374"]
+                 [org.clojure/math.combinatorics "0.1.1"]
+                 [aysylu/loom "0.5.4"]
                  [expectations "2.0.9"]]
   :scm {:name "git"
         :url "https://github.com/automagictools/milestones.git"}
