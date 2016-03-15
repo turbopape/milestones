@@ -1,6 +1,6 @@
 (defproject automagic-tools-milestones "0.1.4"
   :description "Milestones : the Automagic Project Tasks Scheduler"
-  :url "http://automagic.tools/milestones"
+  :url "http://turbopape.github.io/milestones"
   :license {:name "GNU GPL v3.0"
             :url "https://www.gnu.org/licenses/gpl.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
@@ -9,6 +9,6 @@
                  [aysylu/loom "0.5.4"]
                  [expectations "2.0.9"]]
   :scm {:name "git"
-        :url "https://github.com/automagictools/milestones.git"}
+        :url "https://github.com/turbopape/milestones.git"}
   :profiles {:uberjar {:aot :all}
              :dev {:plugins [[lein-expectations "0.0.8"]]}})
