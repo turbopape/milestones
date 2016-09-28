@@ -1,7 +1,7 @@
 Milestones - The Thinking Tasks Scheduler
 =============================================
 
-[![License GPL 3](http://img.shields.io/badge/license-GPL%203-green.svg)](http://www.gnu.org/licenses/gpl-3.0.txt)
+[![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/turbopape/milestones.svg?branch=master)](https://travis-ci.org/turbopape/milestones)
 [![Gratipay](https://img.shields.io/gratipay/turbopape.svg)](https://gratipay.com/turbopape/)
 
