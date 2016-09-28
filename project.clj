@@ -1,8 +1,8 @@
 (defproject automagic-tools-milestones "0.1.4"
   :description "Milestones : the Automagic Project Tasks Scheduler"
   :url "http://turbopape.github.io/milestones"
-  :license {:name "GNU GPL v3.0"
-            :url "https://www.gnu.org/licenses/gpl.html"}
+  :license {:name "MIT" 
+            :url "http://opensource.or g/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.async "0.2.374"]
                  [org.clojure/math.combinatorics "0.1.1"]
