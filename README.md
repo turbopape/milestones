@@ -11,20 +11,20 @@ Milestones - The Thinking Tasks Scheduler
 > "Any sufficiently advanced technology is indistinguishable from magic"
 - According to Clarke's 3rd Law
 
-Milestones is a Clojure library That only needs your project tasks description in order to generate the best possible schedule for you, based on priorities of scheduling you set (in terms of fields in tasks, more about this in a second).
+Milestones is a Clojure library that only needs your project tasks description in order to generate the best possible schedule for you, based on priorities of scheduling you set (in terms of fields in tasks, more about this in a second).
 
 Constraints on tasks are: 
 - Resource : i.e, which resource is needed to perform task, 
 - The task duration, 
 - And predecessors, i.e, which tasks need to be done before a particular task can be fired.
 
-Based on the above constraints specification, Milestones generates the
-Schedule if it does not detect scheduling errors, or shows you what it
-does not like.
+Based on the above constraints specification, Milestones either generates 
+the schedule if it does not detect scheduling errors or shows you what 
+it does not like.
 
 Tasks are basically a map containing IDs as keys and information about
-the tasks as values - Information about a task is itself a  map of
-associating fields to values- Here is an example :
+the tasks as values - Information about a task is itself a map of
+associating fields to values- Here is an example:
 
 ```Clojure
 { 1 { :task-name "A description about this task" 
@@ -38,19 +38,21 @@ associating fields to values- Here is an example :
       :predecessors [1]}}
 ```
 
-Milestones tries to detect any circular dependencies, that is, tasks
+Milestones tries to detect any circular dependencies (tasks
 that depend on themselves or tasks that end up depending on
-themselves; actually, the tasks definition must be a directed non
-cyclical graph.
+themselves). The tasks definition must be a directed 
+non-cyclical graph.
 
 Tasks (that are not milestones) without resource-ids won't be scheduled. Those will be reported as erroneous.
 
-Special tasks with  :is-milestone "whatever" are milestones, they are assigned a random user
-and a duration 1, so they can enter the computation like ordinary tasks. 
+Special tasks with  :is-milestone "whatever" are milestones. They are assigned a random user
+and a duration 1 so they can enter the computation like ordinary tasks. 
 They must have predecessors, otherwise they will be reported as erroneous.
 
-The output of Milestones is a schedule, that is, if success of computation; the very same
-tasks map, with a :begin field, telling us when to begin each task. (Time is depicted as integers).
+If there is success of computation, the output will of Milestones is a schedule. It will be
+comprised off the very same tasks map with a :begin field, telling us when to begin each task.
+Time is depicted as integers.
+
 	
 ```Clojure
 { 1 { :task-name "A description about this task" 
@@ -74,8 +76,8 @@ You can grab  it from clojars. Using Leiningen, you put the dependency in the **
 
 ## Usage
 
-You fire the library using the **schedule** function , 
-you pass to it a map containing  tasks and a vector containing the 
+You fire the library using the **schedule** function, 
+then pass to it a map containing tasks and a vector containing the 
 properties you want the scheduler to prioritize the tasks according to.
 Priorities at left are considered first, less is scheduled first. Say
 you want to schedule tasks with lower _:priority_ and then lower _:duration_ first:
