@@ -237,13 +237,9 @@ Although the protorype showcases the main idea, this repository is the official 
 
 ## License and Credits
 
-Copyright © 2014 Rafik Naccache and [Contributors.](./CONTRIBUTORS.md)
-
-Distributed under the GNU GPL v3.
+Copyright © 2016 Rafik Naccache and Contributors. Distributed under the terms of the MIT License.
 
 All used Libraries in this project (see project.clj) pertain to their
 respective authors and their respective licenses apply.
 
 The Automagic Logo - Labeled "The Robot and The Bunny" is created by my friend Chakib Daoud.
-
-This project is using an Open-Source version of [Intellij Idea Ultimate Edition](https://www.jetbrains.com/idea/whatsnew/), courtesy of JetBrains [s.r.o.](https://www.jetbrains.com/company/) Many thanks to these highly talented and generous guys.
