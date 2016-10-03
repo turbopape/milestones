@@ -11,7 +11,7 @@ Milestones - The Thinking Tasks Scheduler
 > "Any sufficiently advanced technology is indistinguishable from magic"
 - According to Clarke's 3rd Law
 
-Milestones is a Clojure library that only needs your project tasks description in order to generate the best possible schedule for you. This is based on priorities of scheduling you set (in terms of fields in tasks, more about this in a second).
+Milestones is a Clojure library that needs only your project tasks description in order to generate the best possible schedule for you. This is based on priorities of scheduling that you set (in terms of fields in tasks, more about this in a second).
 
 Constraints on tasks are:
 - Resource (i.e, which resource is needed to perform task),
