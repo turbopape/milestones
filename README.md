@@ -209,7 +209,7 @@ and you'd have :
 ```
 
 Which you can pass to another program to render as a GANTT diagram (ours is coming soon.)
-You should have _:achieved_ equal to _:duration_, or Milestones was not able to schedule all of the task - This
+You should have _:achieved_ equal to _:duration_, or Milestones was not able to schedule all of the tasks - This
 should not happen by the way.
 
 ### Errors
@@ -233,7 +233,7 @@ Cup 2014. You can find the code and some technical explanation of the
 algorithms in use (core.async, etc...)
 [here.](https://github.com/turbopape/milestones-clojurecup2014)
 
-Although the protorype showcases the main idea, this repository is the official one, i.e, contains latest versions and is more thoroughly tested.
+Although the prototype showcases the main idea, this repository is the official one, i.e, contains latest versions and is more thoroughly tested.
 
 ## License and Credits
 
