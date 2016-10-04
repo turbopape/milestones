@@ -4,6 +4,7 @@ Milestones - The Thinking Tasks Scheduler
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/turbopape/milestones.svg?branch=master)](https://travis-ci.org/turbopape/milestones)
 [![Gratipay](https://img.shields.io/gratipay/turbopape.svg)](https://gratipay.com/turbopape/)
+[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.turbopape/milestones.svg)](https://clojars.org/org.clojars.turbopape/milestones)
 
 <img src="./logo.jpg"
  alt="Automagic logo" title="The Robot and the Bunny" align="right" />
@@ -73,8 +74,7 @@ The time for each task is represented as an integer value.
 
 You can grab Milestones from clojars. Using Leiningen, you put the dependency in the **:dependencies** section in your project.clj:
 
-[![Clojars Project](http://clojars.org/automagic-tools-milestones/latest-version.svg)](http://clojars.org/automagic-tools-milestones)
-
+[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.turbopape/milestones.svg)](https://clojars.org/org.clojars.turbopape/milestones)
 
 ## Usage
 
