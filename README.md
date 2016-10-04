@@ -238,7 +238,7 @@ Although the prototype showcases the main idea, this repository is the official 
 
 ## License and Credits
 
-Copyright © 2016 Rafik Naccache and Contributors. Distributed under the terms of the [MIT License] (https://github.com/turbopape/milestones/blob/master/LICENSE).
+Copyright © 2016 Rafik Naccache and [Contributors](./CONTRIBUTORS.md). Distributed under the terms of the [MIT License] (https://github.com/turbopape/milestones/blob/master/LICENSE).
 
 All Libraries used in this project (see project.clj) are owned by their respective authors and their respective licenses apply.
 
