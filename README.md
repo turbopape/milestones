@@ -11,7 +11,7 @@ Milestones - The Thinking Tasks Scheduler
 > "Any sufficiently advanced technology is indistinguishable from magic"
 - According to Clarke's 3rd Law
 
-Milestones is a Clojure library that needs only your project tasks description in order to generate the best possible schedule for you. This is based on priorities of scheduling that you set (in terms of fields in tasks, more about this in a second).
+Milestones is a Clojure and ClojureScript library that needs only your project tasks description in order to generate the best possible schedule for you. This is based on priorities of scheduling that you set (in terms of fields in tasks, more about this in a second).
 
 Constraints on tasks are:
 - Resources (i.e, which resource is needed to perform a particular task),
@@ -217,11 +217,14 @@ should not happen).
 
  Error Map Key                 |  What it means
 -------------------------------|-----------------------------
-:reordering-errors             | { 1 [:priority],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
+:unable-to-schedule            | Something made it impossible for the
+recursive algorithm to terminate...
+:reordering-errors             | { 1 [:priority],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack).
 :tasks-w-predecessors-errors   | :{6 [13],...} These tasks have these non-existent predecessors.
-:tasks-w-no-resources          | [1,... These tasks are not milestones and are not assigned to any resource
-:tasks-cycles                  | [[1 2] [3 5]... Couple of tasks that are in a cycle : 1 depends on 2, and 2 on 1
-:milestones-w-no-predecessors  | [1 2...  These milestones don't have predecessors
+:tasks-w-no-resources          | [1,... These tasks are not milestones and are not assigned to any resource.
+:tasks-cycles                  | [[1 2 3]... Set of tasks that are in.
+a cycle. In this example, 2 depends on 1, 2 on 3 and 3 on 1.
+:milestones-w-no-predecessors  | [1 2...  These milestones don't have predecessors.
 
 
 ## History
@@ -233,6 +236,10 @@ The first prototype of Milestones was built as an entry to the Clojure
 Cup 2014. You can find the code and some technical explanation of the
 algorithms in use (core.async, etc...)
 [here.](https://github.com/turbopape/milestones-clojurecup2014)
+
+as of version 0.2.X and above, milestone uses a purely functional
+algorithm using the same logic of assigning work units, but simply
+relying on recur to advance the system status.
 
 Although the prototype showcases the main idea, this repository is the official one, i.e, contains latest versions and is more thoroughly tested.
 

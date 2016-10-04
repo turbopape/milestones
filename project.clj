@@ -1,14 +1,28 @@
-(defproject automagic-tools-milestones "0.1.4"
+(defproject automagic-tools-milestones "0.2.0"
   :description "Milestones : the Automagic Project Tasks Scheduler"
   :url "http://turbopape.github.io/milestones"
   :license {:name "MIT" 
             :url "http://opensource.or g/licenses/MIT"}
+
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/core.async "0.2.374"]
-                 [org.clojure/math.combinatorics "0.1.1"]
-                 [aysylu/loom "0.5.4"]
-                 [expectations "2.0.9"]]
+                 [org.clojure/clojurescript "1.9.229"]
+                 [expectations "2.1.8"]]
+
+  :clean-targets ^{:protect false} ["target"]
+ 
+  :plugins [[lein-cljsbuild "1.1.4"]]
+
+  :cljsbuild {
+              :builds [{:id "milestones"
+                        :source-paths ["src"]
+                        
+                        :compiler {:output-to "target/out/milestones.js"
+                                   :output-dir "target/out"
+                                   :optimizations :none
+                                   :source-map true}}]}
+  
   :scm {:name "git"
         :url "https://github.com/turbopape/milestones.git"}
+
   :profiles {:uberjar {:aot :all}
              :dev {:plugins [[lein-expectations "0.0.8"]]}})

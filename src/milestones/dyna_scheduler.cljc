@@ -1,54 +1,11 @@
 ;;    <The Dynamic Scheduler - Part of Automagic Tools / Milestones>
-;;    Copyright (C) 2014 , Rafik NACCACHE <rafik@automagic.tools>
-
-;; This program is free software: you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation, either version 3 of
-;; the License, or (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public
-;; License along with this program.  If not, see
-;; <http://www.gnu.org/licenses/>.
-
-;;; Using core.async channels, it will plan tasks.
-;;; input is a map of tasks like:
-
-
-;;;           1 {:task-name "A description about this task"
-;;;                   ;the resource that'll be booked doing the task
-;;;            :resource-id 3
-;;;                    ;the duration that this resource will be booked during this task
-;;;            :duration 3
-;;;                     ;priority : less is higher priority
-;;;            :priority 1
-;;;                     ;predecessors : if they are not complete, task cannot be fired.
-;;;             predecessors [2 4]}
-
-
-;;; work queue are the tasks to be processed, i.e [ 2 3 1...
-;;; work flow are the task units to be fed to the channel , i.e [ 1 1 1 3 3 3...
-;;; work in progress are the task that have already been processed by the resource
-;;; complete task is a task already totally in the output schedule.
-;;; an output schedule is like this :
-;;; [{:task-id 1 :time 1 :resource-id 1}
-;;; {:task-id 1 :time 2 :resource-id 1}
-;;; {:task-id 3 :time 1 :resource-id 1}
-;;; {:task-id 3 :time 2 :resource-id 1}
-;;; {:task-id 3 :time 3 :resource-id 1}]
-
-;;; a function exist in the end that emits same tasks with begin field, or errors to be treated.
+;;    Copyright (C) 2016 , Rafik NACCACHE <rafik@fekr.tech>
 
 (ns milestones.dyna-scheduler
   (:require
-    [milestones.graph-utilities :refer :all]
-    [clojure.set]
-    [clojure.core.async :as async
-     :refer [chan go alts! alts!! >! >!! <!! <! close! timeout]]))
+   [milestones.graph-utilities :refer [graph-cycles
+                                       predecessors-of-task-exist?
+                                       gen-all-precedence-edges]]))
 
 (defn gen-work-flow
   "Given all tasks description vector [{:task-id, ...},{}]
@@ -77,10 +34,14 @@
     (let [the-task (get tasks the-task-id)
           duration (the-task :duration)
           nb-task-units-in-output (count
-                                    (filter #(= (% :task-id ) the-task-id )
-                                            output-schedule ))]
-      (/ nb-task-units-in-output duration))
-    (catch Exception e 1)))
+                                   (filter #(= (% :task-id ) the-task-id )
+                                           output-schedule ))]
+        (/ nb-task-units-in-output duration))
+    (catch
+        #?(:clj Exception
+           :cljs js/Error.)
+        e
+        1)))
 
 (defn task-complete?
   "Returns true if task is complete"
@@ -92,9 +53,17 @@
                            the-task-id)
      1))
 
+(defn all-tasks-complete?
+  [tasks
+   output-schedule]
+  (every? (partial task-complete?
+                   tasks
+                   output-schedule)
+          (keys tasks)))
+
 (defn work-in-progress-count
   "Work in progress is a task at the peek of the work flow [ 1 1 2 2 2 ...],
-  that a resource begun treating went to the channel. Once a task is Work in progress,
+  that a resource begun treating. Once a task is Work in progress,
   it is not involved in the reordering of tasks, unless its length 
   is equal to the original task duration : it has not yet been processed."
   [work-flow
@@ -118,17 +87,15 @@
   [tasks
    output-schedule
    task-id]
-
   (let [the-task (get tasks task-id)
         preds (get the-task :predecessors)]
-
     (every? (partial task-complete?
                      tasks
                      output-schedule)
             preds)))
 
 (defn find-fireable-tasks
- "Finds which tasks can be fired based on their predecessors."
+  "Finds which tasks can be fired based on their predecessors."
   [tasks
    output-schedule]
   (vec
@@ -180,15 +147,13 @@
   and inject begin-time and completion ratio in it"
   [output-schedule
    a-task]
-  (let [ [k v] a-task
-         the-tv (task-sched-time-vector output-schedule k)]
-
+  (let [[k v] a-task
+        the-tv (task-sched-time-vector output-schedule k)]
     (if (seq the-tv)
       [k (-> v
              (assoc :begin (apply min the-tv))
              (assoc :achieved (count the-tv)))]
       a-task)))
-
 
 (defn format-tasks-in-output-schedule
   "Given an output schedule :
@@ -207,7 +172,7 @@
              tasks)))
 
 (defn work-flow-for-resource
-  "given a user,  its current work-queue, tasks and current output schedule,
+  "given a user, its current work-queue, tasks and current output schedule,
    we find his tasks, the fireable ones, reorder all of them (if preemptive)
    or those non work in propress if not, and issue new work-flow"
   [current-work-flow
@@ -221,12 +186,12 @@
                                     fireable-tasks-ids)
         his-fireable-tasks (tasks-for-resource fireable-tasks
                                                resource-id)
-        his-incomplete-fireable-tasks  (into {}
-                                             (filter #(not (task-complete?
-                                                                tasks
-                                                                current-output-schedule
-                                                                (key %)))
-                                                     his-fireable-tasks))
+        his-incomplete-fireable-tasks (into {}
+                                            (filter #(not (task-complete?
+                                                           tasks
+                                                           current-output-schedule
+                                                           (key %)))
+                                                    his-fireable-tasks))
         his-incomplete-fireable-tasks-ids (keys his-incomplete-fireable-tasks)
         ;; id of the task to be kept, work in progress
         fireable-id-in-wp (first (filter (partial task-in-work-in-progress?
@@ -234,12 +199,12 @@
                                                   current-work-flow)
                                          his-incomplete-fireable-tasks-ids))
         wp-vector (vec (repeat (work-in-progress-count current-work-flow
-                                                           fireable-id-in-wp)
-                                   fireable-id-in-wp))
+                                                       fireable-id-in-wp)
+                               fireable-id-in-wp))
         ;; [ the part to be reordered and generated]
         fireable-ids-not-in-wp (vec
-                                 (remove #(= % fireable-id-in-wp)
-                                         his-incomplete-fireable-tasks-ids ))
+                                (remove #(= % fireable-id-in-wp)
+                                        his-incomplete-fireable-tasks-ids ))
         his-fireable-tasks-not-in-wp (select-keys tasks fireable-ids-not-in-wp)
         his-ordered-tasks-not-in-wp (reorder-tasks his-fireable-tasks-not-in-wp
                                                    reordering-properties)
@@ -248,29 +213,31 @@
     ;; will be used to sync the threads, on for each resource
     (into his-new-ordered-workflow wp-vector)))
 
-(defn run-scheduler-for-resource!
-  "This runs a thread for the resource-id, connects to a channel,
-  and waits to process a task-unit / timer tick, until the channel is closed"
+(defn run-scheduler-for-resource
+  "For this timer, computes aht task unit this resource will compute,
+  yielding a new workflows map"
   [timer
    resource-id
    tasks
    output-schedule
    workflows
-   reordering-properties
-   chan-to-output]
-  (let [current-flow-for-resource (@workflows resource-id)
-         my-workflow (work-flow-for-resource current-flow-for-resource
-                                           tasks
-                                           resource-id
-                                           output-schedule
-                                           reordering-properties)
-         the-task-unit {:task-id (peek my-workflow)
-                        :time timer
-                        :resource-id resource-id}
-         _ (if (seq my-workflow)
-             (alter workflows assoc resource-id (pop my-workflow)))]
-             ;; now we inject the task-unit in the channel
-    (go (>! chan-to-output the-task-unit))))
+   reordering-properties]
+  
+  (let [current-flow-for-resource (get workflows resource-id)
+        my-workflow (work-flow-for-resource current-flow-for-resource
+                                            tasks
+                                            resource-id
+                                            output-schedule
+                                            reordering-properties)
+        the-task-unit {:task-id (peek my-workflow)
+                       :time timer
+                       :resource-id resource-id}]
+    
+    {:task-unit the-task-unit
+     :new-workflows (if (seq my-workflow)
+                      (assoc workflows
+                             resource-id
+                             (pop my-workflow)))}))
 
 (defn total-task-duration
   "Computes total tasks duration as if they were done sequentially."
@@ -281,78 +248,105 @@
        (filter (comp not nil?))
        (reduce +)))
 
+
+(defn move-system-status-gen
+  [tasks
+   reordering-properties
+   timer
+   resources-ids
+   output-schedule
+   workflows]
+
+                                        ;=> {:task-unit t :workflow wf}
+  (if (seq resources-ids)
+    (let [resource (first resources-ids)
+          new-system-status (run-scheduler-for-resource timer
+                                                        resource
+                                                        tasks
+                                                        output-schedule
+                                                        workflows
+                                                        reordering-properties)]
+      (recur
+       tasks
+       reordering-properties
+       timer
+       (rest resources-ids)
+       (let [new-task-unit (get new-system-status :task-unit)]
+         (if (get new-task-unit :task-id)
+           (conj output-schedule new-task-unit)
+           output-schedule))
+       (get new-system-status :new-workflows)))
+    {:new-output-schedule output-schedule
+     :new-workflows workflows}))
+
 (defn run-scheduler
   "this is the master-mind. runs all of them, collects their inputs,
   and then goes home"
   [tasks
    reordering-properties]
-  (let [timer (ref 0)
-        max-time (* 2 (total-task-duration tasks))
-        workflows (ref {})
-        output-schedule (ref [])
+  (let [max-time (* 2 (total-task-duration tasks))
         resources-ids (set (map :resource-id (vals tasks)))
-        c-to-me (chan (count resources-ids))]
-    (dosync
-      (while
-          (and (< @timer max-time)
-               (not (every? (partial task-complete?
-                                     tasks
-                                     @output-schedule) (keys tasks))))
-        (alter timer inc)
-        (doseq [resource resources-ids]
-          ;; next tick
-          ;; I fire their schedules
-          (run-scheduler-for-resource! @timer
-                                       resource
-                                       tasks
-                                       @output-schedule
-                                       workflows
-                                       reordering-properties
-                                       c-to-me))
-        (dotimes [_ (count resources-ids)]
-          (alter output-schedule conj (<!! c-to-me)))))
-    @output-schedule))
+        move-system-status (partial move-system-status-gen
+                                    tasks reordering-properties)]
+    (loop [timer 1
+           workflows {}
+           output-schedule []]
+      (cond 
+        (and (< timer max-time)
+             (not (all-tasks-complete? tasks
+                                       output-schedule))) (let [{:keys
+                                                                 [new-output-schedule
+                                                                  new-workflows]} (move-system-status  timer
+                                                                                                       resources-ids
+                                                                                                       output-schedule
+                                                                                                       workflows)]
+                                                            (recur  (inc timer)
+                                                                    new-workflows
+                                                                    new-output-schedule))
+        (all-tasks-complete? tasks
+                             output-schedule) output-schedule
+        :else nil))))
 
 
 (defn missing-prop-for-task
   "Given a task ({:prop ...}) and a vector of properties
   returns missing properties for task"
   [task
-    reordering-properties]
+   reordering-properties]
   (vec (filter (comp not nil?)
                (map #(if ((comp not (partial contains? task)) % ) %)
                     reordering-properties))))
-  
+
 (defn tasks-w-missing-properties
   "Returns a map, with task-id and a vector of missing property"
   [tasks
    reordering-properties]
-    (into {} (for [[id t] tasks
-                   :let [missing-props (missing-prop-for-task t
-                                                              reordering-properties)]
-                   :when (seq missing-props)]
-               {id missing-props})))
+  (into {} (for [[id t] tasks
+                 :let [missing-props (missing-prop-for-task t
+                                                            reordering-properties)]
+                 :when (seq missing-props)]
+             {id missing-props})))
 
 (defn tasks-w-not-found-predecessors
   "Returns the Tasks with predecessors not declared as tasks elsewhere in the tasks definition."
   [tasks]
   (keys (filter
-          (fn [[_ t]] (not (predecessors-of-task-exist? tasks
-                                                        t)))
-          tasks)))
+         (fn [[_ t]] (not (predecessors-of-task-exist? tasks
+                                                       t)))
+         tasks)))
 
 (defn tasks-w-no-field
   "Which tasks don't have Field field."
   [tasks field]
-   (filter (comp  not field val) tasks))
+  (filter (comp  not field val) tasks))
 
 (defn tasks-w-empty-predecessors
   [tasks]
   (vec (keys (into {} (filter (comp empty? val)
                               (into {} 
                                     (map 
-                                         (fn [[id t]] {id (:predecessors t)}) 
-                                         tasks)))))))
+                                     (fn [[id t]] {id (:predecessors t)}) 
+                                     tasks)))))))
 (defn not-found-task?
   "If task id is not in tasks, return true"
   [tasks task-id]
@@ -406,12 +400,12 @@
 
 (defn prepare-tasks
   "Adds random user-ids and duration=1 to milestones tasks"
-[tasks]
-(let [milestone-tasks (filter (comp :is-milestone val)
-                              tasks)
-      curated-milestone-tasks (map (fn [[id t]] [id (prepare-milestone t)])
-                                   milestone-tasks)]
-  (into tasks curated-milestone-tasks)))
+  [tasks]
+  (let [milestone-tasks (filter (comp :is-milestone val)
+                                tasks)
+        curated-milestone-tasks (map (fn [[id t]] [id (prepare-milestone t)])
+                                     milestone-tasks)]
+    (into tasks curated-milestone-tasks)))
 
 (defn schedule
   "The real over-master-uber-function to call. Gives you tasks with :begin,
@@ -421,10 +415,13 @@
   (let [errors (errors-on-tasks tasks
                                 reordering-properties)]
     (if (every? (comp nil? seq) (vals errors))
-      {:errors nil
-       :result (let [curated-tasks (prepare-tasks tasks)]
-                 (-> curated-tasks
-                     (run-scheduler reordering-properties)
-                     (format-tasks-in-output-schedule curated-tasks)))}
+      (let [curated-tasks (prepare-tasks tasks)]
+        (if-let [result (run-scheduler curated-tasks
+                                       reordering-properties)]
+          {:errors nil
+           :result (format-tasks-in-output-schedule result curated-tasks)}
+          
+          {:result nil
+           :errors :unable-to-schedule}))
       {:result nil
        :errors (into {} (filter (comp not nil? val) errors))})))
