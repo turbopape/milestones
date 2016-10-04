@@ -11,18 +11,18 @@ Milestones - The Thinking Tasks Scheduler
 > "Any sufficiently advanced technology is indistinguishable from magic"
 - According to Clarke's 3rd Law
 
-Milestones is a Clojure library that needs only your project tasks description in order to generate the best possible schedule for you. This is based on priorities of scheduling that you set (in terms of fields in tasks, more about this in a second).
+Milestones is a Clojure library that needs only your project's task description in order to generate the best possible schedule for you. This is based on the priorities of the tasks that you have set (in terms of fields in tasks, more about this in a second).
 
 Constraints on tasks are:
 - Resources (i.e, which resource is needed to perform a particular task),
-- The task duration
-- Predecessors (i.e, which tasks needs to be done before a particular task can be fired).
+- The task's duration
+- Predecessors (i.e, which tasks need to be done before a particular task can be fired).
 
 Based on the above constraints, Milestones either generates
-the schedule (if it does not detect scheduling errors) or shows you what
-it does not like.
+the schedule (if it does not detect scheduling errors) or shows you any kind
+of error it may have found.
 
-Tasks are basically a map containing IDs as keys and information about
+Tasks are basically build up out of a map containing IDs as keys and information about
 the tasks as values. Information about a task is itself a map of
 associating fields to values; here is an example:
 
@@ -35,22 +35,22 @@ associating fields to values; here is an example:
       :resource-id 1
       :duration 4
       :priority 1
-      :predecessors [1]}}
+      :predecessors [1]} }
 ```
 
 Milestones tries to detect any circular dependencies (tasks
 that depend on themselves or tasks that end up depending on
-themselves). The tasks definition must be a directed
+themselves). The task's definition must be a directed
 non-cyclical graph.
 
-Tasks (that are not milestones) without resource-ids won't be scheduled and they will be reported as erroneous.
+Tasks (that are not milestones) without a resource-id won't be scheduled and will be reported as erroneous.
 
 
 Special tasks with `:is-milestone "whatever"` are milestones. They are assigned a random user
 and a duration 1, so they can enter the computation like ordinary tasks.
 They must have predecessors, otherwise they will be reported as erroneous.
 
-If there is success of computation, the output of Milestones is a schedule. It will be
+If nothing went wrong during the generation process, the output of Milestones is a schedule. It will be
 comprised of the very same tasks mapped with a `:begin` field, telling us when to begin each task.
 The time for each task is represented as an integer value.
 
@@ -66,22 +66,22 @@ The time for each task is represented as an integer value.
      :resource-id 1
      :duration 4
      :priority 1
-     :predecessors [1] :begin 5}}
+     :predecessors [1] :begin 5} }
 ```
 ## Installation
 
-You can grab it from clojars. Using Leiningen, you put the dependency in the **:dependencies** section in your project.clj:
+You can grab Milestones from clojars. Using Leiningen, you put the dependency in the **:dependencies** section in your project.clj:
 
 [![Clojars Project](http://clojars.org/automagic-tools-milestones/latest-version.svg)](http://clojars.org/automagic-tools-milestones)
 
 
 ## Usage
 
-Start the library using the **schedule** function,
-then pass to it a map containing tasks and a vector containing the
+Start the library using the **schedule** function.
+Pass a map to it containing tasks and a vector containing the
 properties that define how the scheduler will prioritize the tasks.
-Priorities at left are considered first, less is scheduled first. Say
-you want to schedule tasks with lower `:priority` and then lower `:duration` first:
+Priorities at the left are considered first. The lower the number, the earlier it is scheduled.
+Say you want to schedule tasks with lower `:priority` and then lower `:duration`, first do:
 
 ```Clojure
     (schedule tasks [:priority :duration])
@@ -210,7 +210,7 @@ and you'd have:
 ```
 
 You can then pass this to another program to render as a Gantt chart (ours is coming soon).
-You should have `:achieved` equal to `:duration`, or Milestones was not able to schedule all of the tasks (this
+You should have `:achieved` equal to `:duration`, or Milestones will not be able to schedule all of the tasks (this
 should not happen).
 
 ### Errors
@@ -219,8 +219,8 @@ should not happen).
 -------------------------------|-----------------------------
 :reordering-errors             | { 1 [:priority],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
 :tasks-w-predecessors-errors   | :{6 [13],...} These tasks have these non-existent predecessors.
-:tasks-w-no-resources          | [1,... These tasks are not milestones and are not assigned to any resource
-:tasks-cycles                  | [[1 2] [3 5]... Couple of tasks that are in a cycle : 1 depends on 2, and 2 on 1
+:tasks-w-no-resources          | [1,... These tasks are not milestones and are not assigned to any resource.
+:tasks-cycles                  | [[1 2] [3 5]... Pair of tasks that are in a cycle: 1 depends on 2, and 2 on 1.
 :milestones-w-no-predecessors  | [1 2...  These milestones don't have predecessors
 
 
