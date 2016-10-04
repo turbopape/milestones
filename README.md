@@ -236,6 +236,9 @@ algorithms in use (core.async, etc...)
 
 Although the prototype showcases the main idea, this repository is the official one, i.e, contains latest versions and is more thoroughly tested.
 
+## Code Of Conduct
+Please note that this project is released with a [Contributor Code of Conduct](./CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
 ## License and Credits
 
 Copyright © 2016 Rafik Naccache and [Contributors](./CONTRIBUTORS.md). Distributed under the terms of the [MIT License] (https://github.com/turbopape/milestones/blob/master/LICENSE).
