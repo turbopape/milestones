@@ -14,12 +14,12 @@ Milestones - The Thinking Tasks Scheduler
 Milestones is a Clojure library that needs only your project tasks description in order to generate the best possible schedule for you. This is based on priorities of scheduling that you set (in terms of fields in tasks, more about this in a second).
 
 Constraints on tasks are:
-- Resource (i.e, which resource is needed to perform task),
-- The task duration,
-- And predecessors (i.e, which tasks need to be done before a particular task can be fired).
+- Resources (i.e, which resource is needed to perform a particular task),
+- The task duration
+- Predecessors (i.e, which tasks needs to be done before a particular task can be fired).
 
 Based on the above constraints, Milestones either generates
-the schedule, if it does not detect scheduling errors, or shows you what
+the schedule (if it does not detect scheduling errors) or shows you what
 it does not like.
 
 Tasks are basically a map containing IDs as keys and information about
@@ -45,8 +45,8 @@ non-cyclical graph.
 
 Tasks (that are not milestones) without resource-ids won't be scheduled. Those will be reported as erroneous.
 
-Special tasks with  :is-milestone "whatever" are milestones. They are assigned a random user
-and a duration 1, so they can enter the computation like ordinary tasks.
+Special tasks with  :is-milestone "whatever" are milestones. They are assigned to a random user
+and a duration 1, so they can be entered in the computation like ordinary tasks.
 They must have predecessors, otherwise they will be reported as erroneous.
 
 If there is success of computation, the output of Milestones is a schedule. It will be
@@ -237,7 +237,7 @@ Although the prototype showcases the main idea, this repository is the official 
 
 ## License and Credits
 
-Copyright © 2016 Rafik Naccache and Contributors. Distributed under the terms of the MIT License.
+Copyright © 2016 Rafik Naccache and Contributors. Distributed under the terms of the [MIT License] (https://github.com/turbopape/milestones/blob/master/LICENSE).
 
 All used Libraries in this project (see project.clj) pertain to their
 respective authors and their respective licenses apply.
