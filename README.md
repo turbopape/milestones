@@ -43,15 +43,15 @@ that depend on themselves or tasks that end up depending on
 themselves). The tasks definition must be a directed
 non-cyclical graph.
 
-Tasks (that are not milestones) without resource-ids won't be scheduled. Those will be reported as erroneous.
+Tasks (that are not milestones) without resource-ids won't be scheduled and they will be reported as erroneous.
 
-Special tasks with  :is-milestone "whatever" are milestones. They are assigned a random user
+Special tasks with `:is-milestone "whatever"` are milestones. They are assigned a random user
 and a duration 1, so they can enter the computation like ordinary tasks.
 They must have predecessors, otherwise they will be reported as erroneous.
 
 If there is success of computation, the output of Milestones is a schedule. It will be
-comprised of the very same tasks map with a :begin field, telling us when to begin each task.
-Time is depicted as integers.
+comprised of the very same tasks mapped with a `:begin` field, telling us when to begin each task.
+The time for each task is represented as an integer value.
 
 
 ```Clojure
@@ -76,17 +76,17 @@ You can grab it from clojars. Using Leiningen, you put the dependency in the **:
 
 ## Usage
 
-You fire up the library using the **schedule** function,
+Start the library using the **schedule** function,
 then pass to it a map containing tasks and a vector containing the
-properties you want the scheduler to prioritize the tasks according to.
+properties that define how the scheduler will prioritize the tasks.
 Priorities at left are considered first, less is scheduled first. Say
-you want to schedule tasks with lower _:priority_ and then lower _:duration_ first:
+you want to schedule tasks with lower `:priority` and then lower `:duration` first:
 
 ```Clojure
     (schedule tasks [:priority :duration])
 ```
 
-It gives you back tasks with **:begin** fields, or an error
+It returns tasks with **`:begin`** fields, or an error
 
 ```Clojure
     {:errors nil
@@ -107,7 +107,7 @@ Or:
 
 ### Sample Case
 
-for example, if you have tasks def'd to:
+For example, if you have tasks defined to:
 
 ```Clojure
     {
@@ -152,7 +152,7 @@ you would want to run
     (schedule tasks [:duration])
 ```
 
-and you'd have :
+and you'd have:
 
 ```Clojure
      {:error nil,
@@ -208,17 +208,17 @@ and you'd have :
        :is-milestone true}}}
 ```
 
-Which you can pass to another program to render as a GANTT diagram (ours is coming soon.)
-You should have _:achieved_ equal to _:duration_, or Milestones was not able to schedule all of the tasks - This
-should not happen by the way.
+You can then pass this to another program to render as a Gantt chart (ours is coming soon).
+You should have `:achieved` equal to `:duration`, or Milestones was not able to schedule all of the tasks (this
+should not happen).
 
 ### Errors
 
  Error Map Key                 |  What it means
 -------------------------------|-----------------------------
 :reordering-errors             | { 1 [:priority],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack)
-:tasks-w-predecessors-errors   | :{6 [13],...} these tasks have these non-existent predecessors.
-:tasks-w-no-resources          | [1,... These tasks are no milestones and are not assigned to any resource
+:tasks-w-predecessors-errors   | :{6 [13],...} These tasks have these non-existent predecessors.
+:tasks-w-no-resources          | [1,... These tasks are not milestones and are not assigned to any resource
 :tasks-cycles                  | [[1 2] [3 5]... Couple of tasks that are in a cycle : 1 depends on 2, and 2 on 1
 :milestones-w-no-predecessors  | [1 2...  These milestones don't have predecessors
 
@@ -228,7 +228,7 @@ should not happen by the way.
 The concept of auto-magic project scheduling is inspired from **the great**
 [Taskjuggler.](http://www.taskjuggler.org).
 
-A first prototype of Milestones was built as an entry to the Clojure
+The first prototype of Milestones was built as an entry to the Clojure
 Cup 2014. You can find the code and some technical explanation of the
 algorithms in use (core.async, etc...)
 [here.](https://github.com/turbopape/milestones-clojurecup2014)
@@ -239,7 +239,6 @@ Although the prototype showcases the main idea, this repository is the official 
 
 Copyright © 2016 Rafik Naccache and Contributors. Distributed under the terms of the MIT License.
 
-All used Libraries in this project (see project.clj) pertain to their
-respective authors and their respective licenses apply.
+All Libraries used in this project (see project.clj) are owned by their respective authors and their respective licenses apply.
 
-The Automagic Logo - Labeled "The Robot and The Bunny" is created by my friend Chakib Daoud.
+The Automagic Logo - Labeled "The Robot and The Bunny" was created by my friend Chakib Daoud.
