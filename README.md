@@ -218,8 +218,7 @@ should not happen).
 
  Error Map Key                 |  What it means
 -------------------------------|-----------------------------
-:unable-to-schedule            | Something made it impossible for the
-recursive algorithm to terminate...
+:unable-to-schedule            | Something made it impossible for the recursive algorithm to terminate...
 :reordering-errors             | { 1 [:priority],...} You gave priority to tasks according to fields (:priority) which some tasks (1) lack).
 :tasks-w-predecessors-errors   | :{6 [13],...} These tasks have these non-existent predecessors.
 :tasks-w-no-resources          | [1,... These tasks are not milestones and are not assigned to any resource.
