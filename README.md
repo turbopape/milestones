@@ -201,8 +201,7 @@ and you'd have:
        :task-name "Eat toast",
        :priority 1},
       6
-      {:resource-id :milestone-user21667,
-       :achieved 1,
+      {:achieved 1,
        :duration 1,
        :predecessors [3],
        :begin 9,

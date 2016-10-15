@@ -1,5 +1,9 @@
 CHANGELOG
 ==========
+## 0.2.1
+* Fix output if the task is a milestone, don't show the random
+  generated user.
+
 ## 0.2.0
 * Add ClojureScript support thanks to the use of reader conditionals,
   the same namespaces are used.

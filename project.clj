@@ -1,4 +1,4 @@
-(defproject org.clojars.turbopape/milestones "0.2.0"
+(defproject org.clojars.turbopape/milestones "0.2.1"
   :description "Milestones : the Automagic Project Tasks Scheduler"
   :url "http://turbopape.github.io/milestones"
   :license {:name "MIT" 

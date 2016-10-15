@@ -419,7 +419,7 @@
         (if-let [result (run-scheduler curated-tasks
                                        reordering-properties)]
           {:errors nil
-           :result (format-tasks-in-output-schedule result curated-tasks)}
+           :result (format-tasks-in-output-schedule result tasks)}
           
           {:result nil
            :errors :unable-to-schedule}))
