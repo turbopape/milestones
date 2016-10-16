@@ -83,10 +83,10 @@
       (or  (contains? input-item-tags :FutureTense)
            (contains? input-item-tags :Preposition)
            (contains? input-item-tags :Milestone)
+           (and (= step :task-name) (contains? input-item-tags :Modal ))
            (and (= step :predecessors) (or (contains? input-item-tags :PastTense)
                                         (contains? input-item-tags :Adjective)
-                                           (=  (set  (keys input-item-tags)) #{:Noun})
-                                            ) )
+                                           (=  (set  (keys input-item-tags)) #{:Noun})))
            (contains? input-item-tags :Task)
            (contains? input-item-tags :Conjunction)
            (contains? input-item-tags :Question)) false
