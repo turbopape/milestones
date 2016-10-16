@@ -1,5 +1,5 @@
 (ns milestones.nlp-tools
-  (:require [milestones.parser-rules :as rules]))
+  (:require [milestones.parser-rules :refer [rules item-significant-value?]]))
 
 (def nlp (.-nlp_compromise js/window))
 
@@ -7,6 +7,7 @@
 (aset lexicon "task" "Task")
 (aset lexicon "tasks" "Task")
 (aset lexicon "milestone" "Milestone")
+(aset lexicon "milestones" "Milestone")
 
 (defn pos-tags-lexicon
   [lexicon
@@ -28,17 +29,7 @@
 
 
 
-(defn item-significant-value?
-  [input-item]
-  (let [input-item-tags (get input-item 1)]
-    (cond
-      (or  (contains? input-item-tags :FutureTense)
-           (contains? input-item-tags :Preposition)
-           (contains? input-item-tags :Task)
-           (contains? input-item-tags :Conjunction)
-           (contains? input-item-tags :Question)) false
-     
-      :default true)))
+
 
 (defn accept-tag
   "Verifies if an input like: [\"task\" {:Noun true}] correponds to
@@ -53,16 +44,15 @@
       (keyword? current-tag-alternatives) {:step current-tag-alternatives
                                            :new-stack (rest tag-stack)} 
       ;; It corrsponds to one of the alternatives
-      (= (as-> input-item i
-           (get i 1)
-           (set (keys i))) current-tag-alternatives) {:step false
+      (some #{(as-> input-item i
+                (get i 1)
+                (set (keys i)))} current-tag-alternatives) {:step false
                                                       :new-stack (rest tag-stack)}
       :default false)
     false))
 
 (defn fast-forward
-  "Goes FFW in a tag-stack until it finds a step specification.
-  "
+  "Goes FFW in a tag-stack until it finds a step specification. "
   [tag-stack]
   (if (seq tag-stack)
     (if (keyword? (first tag-stack))
@@ -96,7 +86,7 @@
                                  (get  output-stack :items))))
             :default (recur (rest input-items)
                             new-stack
-                            (if (item-significant-value? input-item)
+                            (if (item-significant-value? input-item (get output-stack :step))
                               (merge-with conj output-stack {:items (get  input-item 0)})
                               output-stack) 
                             output))
