@@ -1,9 +1,11 @@
-(ns milestones.nlp-tools)
+(ns milestones.nlp-tools
+  (:require [milestones.parser-rules :as rules]))
 
 (def nlp (.-nlp_compromise js/window))
 
 (def lexicon (.lexicon nlp))
 (aset lexicon "task" "Task")
+(aset lexicon "tasks" "Task")
 (aset lexicon "milestone" "Milestone")
 
 (defn pos-tags-lexicon
@@ -24,30 +26,19 @@
 ;;  at this stage --^  must be found -----------^ or this is a step to do something
 
 
-(def tasks-tag-stack
-  '(:task-id
-    #{:Task}
-    #{:Noun :Value}
-    :resource-id
-    #{:Noun}
-    :task-name
-    #{:Verb :Modal}
-    #{:Verb :Infinitive}
-    #{:Noun}
-    :duration
-    #{:Preposition }
-    #{:Noun :Plural :Date}
-    :predecessors
-    #{:Preposition :Condition}
-    #{:Task :Condition}
-    #{:Noun :Value :Condition}))
+
 
 (defn item-significant-value?
   [input-item]
-  (cond
-    (get (get input-item 1) :Preposition ) false
-    (get (get input-item 1) :Task) false
-      :default true))
+  (let [input-item-tags (get input-item 1)]
+    (cond
+      (or  (contains? input-item-tags :FutureTense)
+           (contains? input-item-tags :Preposition)
+           (contains? input-item-tags :Task)
+           (contains? input-item-tags :Conjunction)
+           (contains? input-item-tags :Question)) false
+     
+      :default true)))
 
 (defn accept-tag
   "Verifies if an input like: [\"task\" {:Noun true}] correponds to
@@ -69,9 +60,20 @@
       :default false)
     false))
 
+(defn fast-forward
+  "Goes FFW in a tag-stack until it finds a step specification.
+  "
+  [tag-stack]
+  (if (seq tag-stack)
+    (if (keyword? (first tag-stack))
+      tag-stack
+      (recur (rest tag-stack)))
+    '()))
+
 (defn parse-task-w-a-tag-stack
   [task-str
-   init-tag-stack]
+   init-tag-stack
+   optional-steps]
   (loop
       [input-items (->> task-str
                         pos-tags
@@ -79,7 +81,7 @@
        tag-stack init-tag-stack
        output-stack {}
        output {}]
-    (if (seq input-items)
+    (if  (seq input-items)
       (let [input-item (first input-items)]
         (if-let [{:keys [step new-stack]}
                  (accept-tag input-item tag-stack)]
@@ -96,12 +98,20 @@
                             new-stack
                             (if (item-significant-value? input-item)
                               (merge-with conj output-stack {:items (get  input-item 0)})
-                              output-stack
-                              ) 
-                            output)) 
-          {:error true}))
-      {:error false  :result  (assoc output (get output-stack :step)
-                                 (get  output-stack :items))   })))
+                              output-stack) 
+                            output))
+          
+          (if (some #{(get output-stack  :step)} optional-steps)
+            (recur input-items
+                   (fast-forward  tag-stack)
+                   output-stack
+                   output)
+            {:error {:step (get output-stack  :step) :expected (first tag-stack) :item input-item}})))
+      (if  (empty? tag-stack)
+        
+        {:error false  :result  (assoc output (get output-stack :step)
+                                       (get  output-stack :items))}
+        {:error {:step (get output-stack  :step) :expected (first tag-stack) :item nil }}))))
 
 
 
