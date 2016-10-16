@@ -1,32 +1,32 @@
-;;    <GANTT Charts Drawing using Google Chart Library - Part of Automagic Tools / Milestones>
+;;    <GANTT Charts Drawing on the browser using Google Charts Library - Part of Automagic Tools / Milestones>
 ;;    Copyright (C) 2016 , Rafik NACCACHE <rafik@fekr.tech>
 
-(ns milestones.charts)
+(ns milestones.browser-charts)
 
 (.load js/google.charts "current" (clj->js {:packages ["gantt"]}))
 
 (def chart-options
   #js{:height 275
 
-       :labelStyle {
-                    :fontName "Roboto2"
-                    :fontSize 14
-                    :color "#757575"}
+      :labelStyle {
+                   :fontName "Roboto2"
+                   :fontSize 14
+                   :color "#757575"}
 
       :gantt {
               :criticalPathEnabled true
               :criticalPathStyle {:stroke "#e64a19"
-                                  :strokeWidth 5}
-               }
-       })
-
+                                  :strokeWidth 5}}})
 
 (defn format-data-rows
+  "Given a list of tasks with begin fields, i.e tasks that has been
+  scheduled, format data rows create the js arrows to be fed to google
+  gantt charts all dates must be in RFC ISO-8601 format. Time units
+  are strings usable by the moments frameork: years, months, days, hours, minutes, seconds"
   [tasks
-   schedule-begin  ;; in RFC ISO-8601 1972-05-20T17:33:18.7Z
-   time-units  ;; moment.js time units: years, months, days, hours, minutes, seconds
-   ]
-
+   schedule-begin  
+   time-units]
+  
   (loop
       [remaining-tasks  tasks
        formatted-rows []]
@@ -41,15 +41,12 @@
                (conj formatted-rows [(str task-id)
                                      task-name
                                      resource-id
-                                     
                                      (.add (js/moment schedule-begin)
                                            (dec begin)
                                            time-units)
-                                     
                                      (.add  (js/moment schedule-begin)
                                             (dec (+ begin duration))
                                             time-units)
-                                     
                                      (.asMilliseconds  (.. js/moment (duration duration "days"))) 
                                      (int (* 100 (/ achieved duration)))
                                      (if (empty? predecessors)
@@ -61,9 +58,14 @@
       (clj->js formatted-rows))))
 
 (defn draw-gantt!
+  "Takes a tasks with begin fields(that have been scheduled), a
+  schedule-start (A date in RFC ISO-8601 Format), a moments.js
+  compatible time unit specification (years, months, days, ...) and
+  draws the GANTT inside the in-div-id div. Is given an options as
+  specified by the google gantt charts documentation."
   [tasks
-   schedule-start ;; in RFC ISO-8601
-   time-units ;; moment.js time units: years, months, days, hours, minutes, seconds
+   schedule-start 
+   time-units 
    in-div-id
    options]
   (let [data  (new js/google.visualization.DataTable)
@@ -87,12 +89,3 @@
                 (.getElementById js/document in-div-id))
            data
            (clj->js options))))
-
-
-
-
-
-
-
-
-

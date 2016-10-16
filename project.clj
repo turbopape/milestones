@@ -35,7 +35,8 @@
                         :compiler {:main milestones.core
 
                                    :externs ["https://www.gstatic.com/charts/loader.js"
-                                             "http://momentjs.com/downloads/moment.min.js"]
+                                             "http://momentjs.com/downloads/moment.min.js"
+                                             "https://npmcdn.com/nlp_compromise@latest/builds/nlp_compromise.min.js"]
                                    :asset-path "js/compiled/out"
                                    :output-to "resources/public/js/compiled/milestones.js"
                                    :output-dir "resources/public/js/compiled/out"
@@ -50,8 +51,9 @@
                         
                         :source-paths ["src"]
                         :compiler {:output-to "resources/public/js/compiled/milestones.js"
-                                   :externs [ "https://www.gstatic.com/charts/loader.js"
-                                             "http://momentjs.com/downloads/moment.min.js"]
+                                   :externs ["https://www.gstatic.com/charts/loader.js"
+                                             "http://momentjs.com/downloads/moment.min.js"
+                                             "https://npmcdn.com/nlp_compromise@latest/builds/nlp_compromise.min.js"]
                                    :main milestones.core
                                    :optimizations :advanced
                                    :pretty-print false}}]}

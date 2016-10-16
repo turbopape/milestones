@@ -1,6 +1,10 @@
 pom.xml
 pom.xml.asc
 *jar
+*~
+*#
+.log
+/resources/public/js/compiled/out/
 /lib/
 /classes/
 /target/
