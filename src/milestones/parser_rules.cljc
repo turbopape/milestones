@@ -7,7 +7,7 @@
      #{#{:Noun :Value}}
      :task-name
      #{#{:Noun}}
-     #{#{:Adjective} #{:Verb :PastTense}}
+     #{#{:Adjective} #{:Verb :PastTense} #{:Adjective :Condition}  #{:Preposition :Condition}}
      :predecessors
      #{#{:Predecessors} #{:Predecessors :Condition}}
      #{#{:Task}}
@@ -19,8 +19,8 @@
      #{#{:Predecessors} #{:Predecessors :Condition}}
      #{#{:Task}#{:Task :Condition}}
      #{:multi #{:Noun :Value} #{:Noun :Value :Condition}}
-     #{#{:Noun}}
-     #{#{:Verb :PastTense}}
+     #{#{:Noun} #{:Noun :Condition}}
+     #{#{:Verb :PastTense} #{:Adjective :Condition} #{:Preposition :Condition}}
      :resource-id
      #{#{:Noun}}
      :duration
