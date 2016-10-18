@@ -16,14 +16,14 @@
      #{#{:Adjective}})
    ;;Rule 1: When task 1, 2, 3 are achieved Rafik can work 3 minutes with priority 4 on task 4 in order to Eat bread
    '(:predecessors
-     #{#{:Predecessors}#{:Predecessors :Condition}}
-     #{#{:Task}{:Task :Condition}}
-     #{:star #{:Noun :Value}}
+     #{#{:Predecessors} #{:Predecessors :Condition}}
+     #{#{:Task}#{:Task :Condition}}
+     #{:multi #{:Noun :Value} #{:Noun :Value :Condition}}
      #{#{:Noun}}
      #{#{:Verb :PastTense}}
-      :resource-id
+     :resource-id
      #{#{:Noun}}
-      :duration
+     :duration
      #{#{:Verb :Modal}}
      #{#{:Verb :Infinitive}}
      #{#{:Noun :Plural :Date}}
@@ -61,8 +61,8 @@
      #{#{ :Noun :Plural :Date}}
       :predecessors
      #{#{ :Predecessors :Condition} #{:Predecessors}}
-     #{#{ :Task :Condition}}
-     #{:multi #{ :Noun :Value :Condition} #{:Noun :value}})
+     #{#{ :Task :Condition}#{:Task}}
+     #{:multi #{ :Noun :Value :Condition} #{:Noun :Value}})
    
    ;; Rule 3 - "task 1 : Rafik shall eat bread in 2 minutes, with priority 4, after  task 3,2 and 15." 
    '( :task-id

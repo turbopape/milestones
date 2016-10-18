@@ -12,6 +12,7 @@
 (aset lexicon "with priority" "Priority")
 (aset lexicon "in order" "InOrder")
 (aset lexicon "when" "Predecessors")
+(aset lexicon "following" "Predecessors")
 (aset lexicon "after" "Predecessors") ;; to avoid amboguity in the optional steps
 
 (defn pos-tags-lexicon
@@ -96,43 +97,51 @@
        tag-stack init-tag-stack
        output-stack {}
        output {}]
-    (if (seq input-items)
-      (let [input-item (first input-items)]
-        (if-let [{:keys [step new-stack]}
-                 (accept-tag input-item tag-stack)]
-          ;; parse if successful, let's see:
-          (cond
-            step (recur input-items
-                        new-stack
-                        {:step step :items []}
-                        (if  (empty? (get output-stack :items))
-                          output
-                           (assoc output (get output-stack :step)
-                                 (get  output-stack :items))))
-            :default (recur (rest input-items)
-                            new-stack
-                            (if (item-significant-value? input-item (get output-stack :step))
-                              (merge-with conj output-stack {:items (get  input-item 0)})
-                              output-stack) 
-                            output))
+    (if (and (seq input-items) (seq tag-stack))
+      (let [input-item (first input-items)
+            {:keys [step new-stack] :as accept?} (accept-tag input-item tag-stack)]
+        (cond
+          step  (recur input-items
+                       new-stack
+                       {:step step :items []}
+                       (if  (empty? (get output-stack :items))
+                         output
+                         (assoc output (get output-stack :step)
+                                (get  output-stack :items))))
+          (and (not accept?)
+               (some #{(get output-stack :step)}
+                     optional-steps)) (if-let [ffw-stack (fast-forward tag-stack)]
+                                        (recur input-items
+                                               ffw-stack
+                                               output-stack
+                                               output)
+                                        {:error {:step (get output-stack :step)
+                     :expected (first tag-stack)
+                     :item input-item}})
+       
+          (not accept?) {:error {:output output
+                                 :step (get output-stack  :step)
+                                 :expected (first tag-stack) :item input-item}}
+
           
-          (if (some #{(get output-stack :step)} optional-steps)
-            
-              (if-let [ffw-stack (fast-forward tag-stack)]
-                (recur input-items
-                       ffw-stack
-                       output-stack
-                       output)
-                {:error {:step (get output-stack  :step) :expected (first tag-stack) :item input-item}}
-                )
-            {:error {:step (get output-stack  :step) :expected (first tag-stack) :item input-item}})))
-      ;; Items are finished. Stack must be either empty, or contains a :multi kind of item
-      (if  (or (empty? tag-stack)
-               (contains? (first tag-stack) :multi))
-        
-        {:error false  :result  (assoc output (get output-stack :step)
-                                       (get  output-stack :items))}
-        {:error {:step (get output-stack :step) :expected (first tag-stack) :item nil }}))))
+          :default (recur (rest input-items)
+                          new-stack
+                          (if (item-significant-value? input-item (get output-stack :step))
+                            (merge-with conj output-stack {:items (get  input-item 0)})
+                            output-stack) 
+                          output)))
+
+      ;; either input or stack are empty here.
+      (cond (or  (and (empty? input-items)
+                      (empty? tag-stack))
+                 (some #{(first tag-stack)} optional-steps)
+                 (contains? (first tag-stack) :multi)) {:error false
+                                                  :result (assoc output (get output-stack :step)
+                                                                 (get  output-stack :items))} ;; all good,
+            (not (empty? input-items) ) {:error "Unable to consume all input."
+                                         :input input-items}
+            (not (empty? tag-stack) ) {:error "Input does not fulfill all of the tag-stack states."
+                                       :tag-stask tag-stack}))))
 
 
 
