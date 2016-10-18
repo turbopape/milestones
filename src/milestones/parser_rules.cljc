@@ -2,7 +2,7 @@
 
 (def rules
   [;;Rule 0 "milestone 5 : goal reached  when tasks 2, 3 are complete."
-   '(:task-id
+   '(:milestone-id
      #{#{:Milestone}}
      #{#{:Noun :Value}}
      :task-name

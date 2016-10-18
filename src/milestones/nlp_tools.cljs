@@ -172,14 +172,31 @@
   "Curates generated tasks : 1,2,3... => [1 2 3]
   [d] -> d, [5] -> 5"
   [a-task]
-  (let [{:keys [predecessors]} a-task
-        _ (println predecessors)]
-    {
-     :predecessors (->>
-                    (get predecessors 0)
-                    (.text nlp)
-                    .terms   
-                   (mapv #(.root %)))
-                   }
-    )
-  )
+  (let [{:keys [task-id task-name resource-id duration predecessors priority milestone-id]} a-task
+        regN  (js/RegExp "\\d+" "g")
+        _ (println predecessors)
+        output {
+                :task-id (if task-id
+                           (js/parseInt  (get task-id 0))
+                           (js/parseInt (get milestone-id 0)))
+              
+                :taskname (apply str (interleave task-name (repeat  " ")) ) 
+                :resource-id (get  resource-id 0)
+                :priority (js/parseInt (get priority 0) )
+                :duration  (js/parseInt
+                     (->>  (.value nlp  (get  duration 0) )
+                           (.-number)))
+                :duration-unit (->>  (.value nlp  (get  duration 0) )
+                                     (.-unit))
+                :predecessors (->>
+                               predecessors
+                               (mapcat #(.match % regN ))
+                               (map js/parseInt)
+                               (filter (comp not js/isNaN))
+                               (into [])
+                               )
+                }]
+
+    (if milestone-id
+      (assoc output :is-milestone true)
+      output)))
