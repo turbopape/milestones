@@ -1,7 +1,7 @@
 (ns milestones.parser-rules)
 
 (def rules
-  [;;Rule 0 "milestone 5 : goal reached  when tasks 2,3 are complete."
+  [;;Rule 0 "milestone 5 : goal reached  when tasks 2, 3 are complete."
    '(:task-id
      #{#{:Milestone}}
      #{#{:Noun :Value}}
@@ -9,16 +9,16 @@
      #{#{:Noun}}
      #{#{:Adjective} #{:Verb :PastTense}}
      :predecessors
-     #{#{:Predecessors}}
+     #{#{:Predecessors} #{:Predecessors :Condition}}
      #{#{:Task}}
-     #{#{:Noun :Value}}
+     #{:multi #{:Noun :Value}}
      #{#{:Noun}}
      #{#{:Adjective}})
-   ;;Rule 1: When task 1,2 and 3 are achieved Rafik can work 3 minutes with priority 4 on task 4 in order to Eat bread
+   ;;Rule 1: When task 1, 2, 3 are achieved Rafik can work 3 minutes with priority 4 on task 4 in order to Eat bread
    '(:predecessors
-     #{#{:Predecessors}}
-     #{#{:Task}}
-     #{#{:Noun :Value}}
+     #{#{:Predecessors}#{:Predecessors :Condition}}
+     #{#{:Task}{:Task :Condition}}
+     #{:star #{:Noun :Value}}
      #{#{:Noun}}
      #{#{:Verb :PastTense}}
       :resource-id
@@ -38,9 +38,8 @@
       #{#{:InOrder}}
       #{#{:Preposition}}
       #{#{:Verb :Infinitive}}
-      #{#{:Noun}}
-     )
-   ;;Rule 2: for task 1 with priority 3 Rafik will have to eat bread in 2 minutes, after  tasks 3,2 and 15.
+      #{#{:Noun}})
+   ;;Rule 2: for task 1 with priority 3 Rafik will have to eat bread in 2 minutes, after  tasks 3, 2, 15.
    '( :task-id
      #{#{ :Conjunction}}
      #{#{ :Task}}
@@ -61,9 +60,9 @@
      #{#{ :Preposition}}
      #{#{ :Noun :Plural :Date}}
       :predecessors
-     #{#{ :Predecessors :Condition}}
+     #{#{ :Predecessors :Condition} #{:Predecessors}}
      #{#{ :Task :Condition}}
-     #{#{ :Noun :Value :Condition}})
+     #{:multi #{ :Noun :Value :Condition} #{:Noun :value}})
    
    ;; Rule 3 - "task 1 : Rafik shall eat bread in 2 minutes, with priority 4, after  task 3,2 and 15." 
    '( :task-id
@@ -82,9 +81,9 @@
      #{#{:Priority}}
      #{#{:Noun :Value}}
      :predecessors
-     #{#{ :Predecessors :Condition}}
-     #{#{ :Task :Condition}}
-     #{#{ :Noun :Value :Condition}})])
+     #{#{ :Predecessors :Condition}#{:Predecessors}}
+     #{#{ :Task :Condition}#{:Task}}
+     #{:multi #{ :Noun :Value :Condition} #{:Noun :Value}})])
 
 (defn item-significant-value?
   [input-item step]
