@@ -1,7 +1,7 @@
 (ns milestones.parser-rules)
 
 (def rules
-  [;;Rule 0 milestone 5 : goal reached  when tasks 2,3 are complete.
+  [;;Rule 0 "milestone 5 : goal reached  when tasks 2,3 are complete."
    '(:task-id
      #{#{:Milestone}}
      #{#{:Noun :Value}}
@@ -9,42 +9,49 @@
      #{#{:Noun}}
      #{#{:Adjective} #{:Verb :PastTense}}
      :predecessors
-     #{#{:Question}}
+     #{#{:Predecessors}}
      #{#{:Task}}
      #{#{:Noun :Value}}
      #{#{:Noun}}
      #{#{:Adjective}})
-   ;;Rule 1: When task 1,2 and 3 are achieved Rafik can work 3 minutes on task 4 in order to Eat bread
-   '( :predecessors
-     #{#{ :Question}}
-     #{#{ :Task}}
-     #{#{ :Noun :Value}}
-     #{#{ :Noun}}
-     #{#{ :Verb :PastTense}}
+   ;;Rule 1: When task 1,2 and 3 are achieved Rafik can work 3 minutes with priority 4 on task 4 in order to Eat bread
+   '(:predecessors
+     #{#{:Predecessors}}
+     #{#{:Task}}
+     #{#{:Noun :Value}}
+     #{#{:Noun}}
+     #{#{:Verb :PastTense}}
       :resource-id
-     #{#{ :Noun}}
+     #{#{:Noun}}
       :duration
-     #{#{ :Verb :Modal}}
-     #{#{ :Verb :Infinitive}}
-     #{#{ :Noun :Plural :Date}}
-      :task-id
-     #{#{ :Preposition}}
-     #{#{ :Task}}
-     #{#{ :Noun :Value}}
+     #{#{:Verb :Modal}}
+     #{#{:Verb :Infinitive}}
+     #{#{:Noun :Plural :Date}}
+     :priority
+     #{#{:Priority}}
+     #{#{:Noun :Value}}
+     :task-id
+     #{#{:Preposition}}
+     #{#{:Task}}
+     #{#{:Noun :Value}}
       :task-name
-     #{#{ :Preposition}}
-     #{#{ :Noun}}
-     #{#{ :Preposition}}
-     #{#{ :Verb :Infinitive}}
-     #{#{ :Noun}}
+      #{#{:InOrder}}
+      #{#{:Preposition}}
+      #{#{:Verb :Infinitive}}
+      #{#{:Noun}}
      )
-   ;;Rule 2: for task 1  Rafik will have to eat bread in 2 minutes, after  tasks 3,2 and 15.
+   ;;Rule 2: for task 1 with priority 3 Rafik will have to eat bread in 2 minutes, after  tasks 3,2 and 15.
    '( :task-id
      #{#{ :Conjunction}}
      #{#{ :Task}}
      #{#{ :Noun :Value}}
-      :resource-id
+     :priority
+     #{#{:Priority}}
+     #{#{:Noun :Value}}
+ 
+     :resource-id
      #{#{ :Noun}}
+      
       :task-name
      #{#{ :Verb :FutureTense}}
      #{#{ :Preposition}}
@@ -53,12 +60,12 @@
       :duration
      #{#{ :Preposition}}
      #{#{ :Noun :Plural :Date}}
-      :dependencies
-     #{#{ :Preposition :Condition}}
+      :predecessors
+     #{#{ :Predecessors :Condition}}
      #{#{ :Task :Condition}}
      #{#{ :Noun :Value :Condition}})
    
-   ;; Rule 3 - "task 1 : Rafik shall eat bread in 2 minutes, after  task 3,2 and 15." 
+   ;; Rule 3 - "task 1 : Rafik shall eat bread in 2 minutes, with priority 4, after  task 3,2 and 15." 
    '( :task-id
      #{#{ :Task}}
      #{#{ :Noun :Value}}
@@ -71,8 +78,11 @@
       :duration
      #{#{ :Preposition}}
      #{#{ :Noun :Plural :Date}}
-      :predecessors
-     #{#{ :Preposition :Condition}}
+     :priority
+     #{#{:Priority}}
+     #{#{:Noun :Value}}
+     :predecessors
+     #{#{ :Predecessors :Condition}}
      #{#{ :Task :Condition}}
      #{#{ :Noun :Value :Condition}})])
 
@@ -83,8 +93,14 @@
       (or  (contains? input-item-tags :FutureTense)
            (contains? input-item-tags :Preposition)
            (contains? input-item-tags :Milestone)
-           (and (= step :task-name) (contains? input-item-tags :Modal ))
-           (and (= step :predecessors) (or (contains? input-item-tags :PastTense)
+           (and (= step :duration) (contains? input-item-tags :Verb))
+           (and (= step :priority) (or (contains? input-item-tags :Priority)))
+           (and (= step :task-name) (or  (contains? input-item-tags :Modal)
+                                         (contains? input-item-tags :InOrder)
+                                         (contains? input-item-tags :Preposition)))
+           (and (= step :predecessors) (or
+                                        (contains? input-item-tags :Predecessors)
+                                        (contains? input-item-tags :PastTense)
                                         (contains? input-item-tags :Adjective)
                                            (=  (set  (keys input-item-tags)) #{:Noun})))
            (contains? input-item-tags :Task)

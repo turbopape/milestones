@@ -1,6 +1,7 @@
 (ns milestones.nlp-tools
   (:require [milestones.parser-rules :refer [rules item-significant-value?]]))
 
+
 (def nlp (.-nlp_compromise js/window))
 
 (def lexicon (.lexicon nlp))
@@ -8,6 +9,12 @@
 (aset lexicon "tasks" "Task")
 (aset lexicon "milestone" "Milestone")
 (aset lexicon "milestones" "Milestone")
+(aset lexicon "with priority" "Priority")
+(aset lexicon "in order" "InOrder")
+(aset lexicon "when" "Predecessors")
+(aset lexicon "after" "Predecessors") ;; to avoid amboguity in the optional steps
+
+
 
 (defn pos-tags-lexicon
   [lexicon
@@ -25,7 +32,6 @@
 ;; A stack for a recursive descent parser, containing what keys to accept at every  stage:
 ;; '( ...       #{:noun :verb}  ...        :a-step)
 ;;  at this stage --^  must be found -----------^ or this is a step to do something
-
 
 
 
@@ -71,7 +77,7 @@
        tag-stack init-tag-stack
        output-stack {}
        output {}]
-    (if  (seq input-items)
+    (if (seq input-items)
       (let [input-item (first input-items)]
         (if-let [{:keys [step new-stack]}
                  (accept-tag input-item tag-stack)]
@@ -91,7 +97,7 @@
                               output-stack) 
                             output))
           
-          (if (some #{(get output-stack  :step)} optional-steps)
+          (if (some #{(get output-stack :step)} optional-steps)
             (recur input-items
                    (fast-forward  tag-stack)
                    output-stack
