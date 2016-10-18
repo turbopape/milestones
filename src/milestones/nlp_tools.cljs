@@ -111,7 +111,21 @@
 
 
 
-(defn curate-items
-  [item-vector]
-  
-  )
+(defn parse-tags-rules
+  "Tries to parse the sentence according to rules (tag stacks). If it finds a
+  match, will return it. else, it'll return the errors it found"
+  [rules
+   sentence
+   optional-steps]
+  (loop [rem-rules rules
+         errors []]
+
+    (if (seq rem-rules)
+      (let  [cur-rule (first rem-rules)
+             cur-parse-result (parse-task-w-a-tag-stack sentence cur-rule optional-steps)]
+        (if-let [err (get cur-parse-result :error)]
+          (recur (rest rem-rules)
+                 (conj errors err))?
+          {:errors nil
+           :result (get cur-parse-result :result)}))
+      {:errors errors})))
