@@ -143,8 +143,6 @@
             (not (empty? tag-stack) ) {:error "Input does not fulfill all of the tag-stack states."
                                        :tag-stask tag-stack}))))
 
-
-
 (defn parse-tags-rules
   "Tries to parse the sentence according to rules (tag stacks). If it finds a
   match, will return it. else, it'll return the errors it found"
@@ -164,7 +162,6 @@
            :result (get cur-parse-result :result)}))
       {:errors errors})))
 
-
 (def parse-tags
   (partial parse-tags-rules rules))
 
@@ -174,29 +171,33 @@
   [a-task]
   (let [{:keys [task-id task-name resource-id duration predecessors priority milestone-id]} a-task
         regN  (js/RegExp "\\d+" "g")
-        _ (println predecessors)
+        actual-task-id (if task-id
+                         (js/parseInt  (get task-id 0))
+                         (js/parseInt (get milestone-id 0)))
+       
         output {
-                :task-id (if task-id
-                           (js/parseInt  (get task-id 0))
-                           (js/parseInt (get milestone-id 0)))
-              
-                :taskname (apply str (interleave task-name (repeat  " ")) ) 
+                :taskname (apply str (interleave task-name (repeat  " "))) 
                 :resource-id (get  resource-id 0)
-                :priority (js/parseInt (get priority 0) )
+                :priority (js/parseInt (get priority 0))
                 :duration  (js/parseInt
-                     (->>  (.value nlp  (get  duration 0) )
+                     (->>  (.value nlp  (get  duration 0))
                            (.-number)))
-                :duration-unit (->>  (.value nlp  (get  duration 0) )
+                :duration-unit (->>  (.value nlp  (get  duration 0))
                                      (.-unit))
                 :predecessors (->>
                                predecessors
-                               (mapcat #(.match % regN ))
+                               (mapcat #(.match % regN))
                                (map js/parseInt)
                                (filter (comp not js/isNaN))
-                               (into [])
-                               )
-                }]
+                               (into []))}]
 
-    (if milestone-id
-      (assoc output :is-milestone true)
-      output)))
+    {actual-task-id (if milestone-id
+                      (assoc output :is-milestone true)
+                      output)}))
+
+(defn guess-task
+  [a-task-desc optional-steps]
+  (let [the-task (parse-tags a-task-desc optional-steps)]
+    (if (get the-task :errors)
+      {:error :unable-to-parse}
+      (curate-task (:result the-task)))))

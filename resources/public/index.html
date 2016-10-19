@@ -3,13 +3,80 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Milestones - The Automagic Project Scheduler</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="http://momentjs.com/downloads/moment.min.js"></script>
     <script type="text/javascript" src="https://npmcdn.com/nlp_compromise@latest/builds/nlp_compromise.min.js"></script>
-    <link href="css/style.css" rel="stylesheet" type="text/css">
-  </head>
-  <body>
-    <div id="chart_div"></div>
+  
+    <link rel="shortcut icon" type="image/png" href="img/milestones-logo.jpg"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+
+  <body id="page_top" class="index">
+
+    
+    <header>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <h2>Milestones - The Automagic Project Scheduler</h2>
+            <a href="https://github.com/turbopape/milestones"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+            <div class="intro-text">
+              <span class="name"><a href="https://github.com/turbopape/milestones">Milestones</a> Play Ground by <a href="https://github.com/turbopape">@turbopape</a></span>
+              <hr class="star-light">
+              <span class="skills">Milestones v0.3.2. Try typing in some tasks description, and hit <b>Schedule it !!</b> when you're ready... </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <section id="portfolio">
+      <div id="dzone" class="alert " role="alert"></div>
+      <div class="container-fluid">
+         <div class="row">
+           <div class="col-md-2">
+            <img class="img-responsive tn-small"
+                 src="img/milestones-logo.jpg"
+                 alt="The Robot and The Bunny Logo">
+          </div>
+           <div class="col-md-4 portfolio-item">
+             <div id="milestones-codemirror">
+             
+             <textarea id="default-template" style="resize:none" rows="10"  class="form-control custom-control"  >
+               
+               == Here I put my text ==
+
+
+             </textarea>
+             <span class="input-group-addon btn btn-primary">Schedule it !</span>
+             </div>
+           </div>
+           <div class="col-sm-6 portfolio-item">
+             <div id="gantt-chart">
+               
+             </div>
+           </div>
+           
+         </div>
+        
+      </div>
+    </section>
+    <footer>
+    </footer>
+    <script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"> </script>
+    <script src="./codemirror/lib/codemirror.js"></script>
+    <script src="./codemirror/mode/scheme/scheme.js"></script>
+    <script src="./codemirror/keymap/emacs.js"></script>
+    <script src="./codemirror/addon/edit/matchbrackets.js"></script>
+   
+
     <script type="text/javascript" src="js/compiled/milestones.js"></script>
-  </body>
+
+</body>
 </html>

@@ -20,7 +20,7 @@
 
 (defn format-data-rows
   "Given a list of tasks with begin fields, i.e tasks that has been
-  scheduled, format data rows create the js arrows to be fed to google
+  scheduled, format data rows create the js arrays to be fed to google
   gantt charts all dates must be in RFC ISO-8601 format. Time units
   are strings usable by the moments frameork: years, months, days, hours, minutes, seconds"
   [tasks
@@ -57,17 +57,17 @@
                                          (reduce str "" p)))])))
       (clj->js formatted-rows))))
 
-(defn draw-gantt!
+(defn draw-gantt-options!
   "Takes a tasks with begin fields(that have been scheduled), a
   schedule-start (A date in RFC ISO-8601 Format), a moments.js
   compatible time unit specification (years, months, days, ...) and
   draws the GANTT inside the in-div-id div. Is given an options as
   specified by the google gantt charts documentation."
-  [tasks
+  [options
+   tasks
    schedule-start 
    time-units 
-   in-div-id
-   options]
+   in-div-id]
   (let [data  (new js/google.visualization.DataTable)
         data-rows (format-data-rows tasks schedule-start time-units)]
 
@@ -89,3 +89,5 @@
                 (.getElementById js/document in-div-id))
            data
            (clj->js options))))
+
+(def draw-gantt! (partial draw-gantt-options! chart-options))
