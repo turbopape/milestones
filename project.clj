@@ -55,7 +55,7 @@
                                              "http://momentjs.com/downloads/moment.min.js"
                                              "https://npmcdn.com/nlp_compromise@latest/builds/nlp_compromise.min.js"]
                                    :main milestones.core
-                                   :optimizations :advanced
+                                   :optimizations :none
                                    :pretty-print false}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"

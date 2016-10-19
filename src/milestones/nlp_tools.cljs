@@ -1,7 +1,6 @@
 (ns milestones.nlp-tools
   (:require [milestones.parser-rules :refer [rules item-significant-value?]]))
 
-
 (def nlp (.-nlp_compromise js/window))
 
 (def lexicon (.lexicon nlp))
@@ -15,14 +14,20 @@
 (aset lexicon "following" "Predecessors")
 (aset lexicon "after" "Predecessors") ;; to avoid amboguity in the optional steps
 
+(defn plural
+  [txt]
+  (.text nlp txt)
+  )
+
+; sentence = (.sentence nlp sentence #js {:lexicon lexicon})
+
 (defn pos-tags-lexicon
   [lexicon
    sentence]
-  (let [nlp-sentence (.sentence nlp sentence #js {:lexicon lexicon})
-        nlp-terms (.-terms nlp-sentence)]
+  (let [nlp-terms (.-terms sentence)]
     (map
-     (fn [term] [(js->clj  (.-text term))
-                 (js->clj   (.-pos term) :keywordize-keys true )])
+     (fn [term] [(js->clj (.-text term))
+                 (js->clj (.-pos term) :keywordize-keys true )])
      nlp-terms)))
 
 (def pos-tags (partial pos-tags-lexicon lexicon))
@@ -86,12 +91,13 @@
       (recur (rest tag-stack)))
     nil))
 
+;;sentence = (.sentence nlp txt-sentence #js {:lexicon lexicon})
 (defn parse-task-w-a-tag-stack
-  [task-str
+  [sentence
    init-tag-stack
    optional-steps]
   (loop
-      [input-items (->> task-str
+      [input-items (->> sentence
                         pos-tags
                         (filter (comp not empty? #(get % 1))))
        tag-stack init-tag-stack
@@ -143,6 +149,7 @@
             (not (empty? tag-stack) ) {:error "Input does not fulfill all of the tag-stack states."
                                        :tag-stask tag-stack}))))
 
+
 (defn parse-tags-rules
   "Tries to parse the sentence according to rules (tag stacks). If it finds a
   match, will return it. else, it'll return the errors it found"
@@ -162,8 +169,10 @@
            :result (get cur-parse-result :result)}))
       {:errors errors})))
 
+
 (def parse-tags
   (partial parse-tags-rules rules))
+
 
 (defn curate-task  
   "Curates generated tasks : 1,2,3... => [1 2 3]
@@ -175,8 +184,7 @@
                          (js/parseInt  (get task-id 0))
                          (js/parseInt (get milestone-id 0)))
        
-        output {
-                :taskname (apply str (interleave task-name (repeat  " "))) 
+        output {:taskname (apply str (interleave task-name (repeat  " "))) 
                 :resource-id (get  resource-id 0)
                 :priority (js/parseInt (get priority 0))
                 :duration  (js/parseInt
@@ -195,9 +203,23 @@
                       (assoc output :is-milestone true)
                       output)}))
 
-(defn guess-task
-  [a-task-desc optional-steps]
-  (let [the-task (parse-tags a-task-desc optional-steps)]
+
+;sentence = (.sentence nlp sentence #js {:lexicon lexicon})
+(defn guess-a-task
+  [sentence optional-steps]
+  (let [the-task (parse-tags sentence optional-steps)]
     (if (get the-task :errors)
       {:error :unable-to-parse}
       (curate-task (:result the-task)))))
+
+
+(defn guess-tasks-from-str
+  [tasks-str optional-steps]
+  (let [sentences (->> tasks-str
+                       (.text nlp)
+                       (.-sentences))
+       
+        ]
+    (->> sentences 
+         (map #(guess-a-task % optional-steps))
+         (into {}))))
