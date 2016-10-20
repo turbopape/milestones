@@ -185,7 +185,6 @@
                          (.replace (get duration 0) regPnt "" )
                          nil)
 
-        _ (println "durtion" duration ", clean duration:" clean-duration)
         actual-task-id (if task-id
                          (js/parseInt  (get task-id 0))
                          (js/parseInt (get milestone-id 0)))
@@ -209,8 +208,6 @@
                       (assoc output :is-milestone true)
                       output)}))
 
-
-;sentence = (.sentence nlp sentence #js {:lexicon lexicon})
 (defn guess-a-task
   [sentence optional-steps]
   (let [the-task (parse-tags sentence optional-steps)]
