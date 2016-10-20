@@ -49,14 +49,13 @@
                        ;; production. You can build this with:
                        ;; lein cljsbuild once min
                        {:id "min"
-                        
                         :source-paths ["src"]
                         :compiler {:output-to "resources/public/js/compiled/milestones.js"
                                    :externs ["https://www.gstatic.com/charts/loader.js"
                                              "http://momentjs.com/downloads/moment.min.js"
                                              "https://npmcdn.com/nlp_compromise@latest/builds/nlp_compromise.min.js"]
                                    :main milestones.core
-                                   :optimizations :none
+                                   :optimizations :advanced
                                    :pretty-print false}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
@@ -115,7 +114,4 @@
                              :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
   
   :scm {:name "git"
-        :url "https://github.com/turbopape/milestones.git"}
-
-  
-  )
+        :url "https://github.com/turbopape/milestones.git"})

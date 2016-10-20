@@ -18,7 +18,6 @@
   (let [tasks-str (.-value (.getElementById  js/document "default-template"   ))
       
         tasks  (guess-tasks-from-str tasks-str [:predecessors :priority])
-        _ (cljs.pprint/pprint tasks)
        scheduled (schedule tasks [:priority])]
    (if-let [err (get scheduled :errors)]
      (do
