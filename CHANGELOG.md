@@ -2,8 +2,10 @@ CHANGELOG
 ==========
 ## 0.3.0
 * Add GANTT Charts generation Thanks to [Google Charts Lib](https://developers.google.com/chart/interactive/docs/gallery/ganttchart)
-* Add support for NLP tax parsing - in Clojurescript 
-* Create a little Web Play Ground.
+* Add support for NLP syntax parsing in clojurescript -
+  Using
+  [nlp-compromise](https://github.com/nlp-compromise/nlp_compromise)
+* Created a little Web Play Ground.
 
 ## 0.2.1
 * Fix output if the task is a milestone, don't show the random
