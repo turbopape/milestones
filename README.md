@@ -5,6 +5,7 @@ Milestones - The Automagic Project Planner
 [![Build Status](https://travis-ci.org/turbopape/milestones.svg?branch=master)](https://travis-ci.org/turbopape/milestones)
 [![Gratipay](https://img.shields.io/gratipay/turbopape.svg)](https://gratipay.com/turbopape/)
 [![Clojars Project](https://img.shields.io/clojars/v/org.clojars.turbopape/milestones.svg)](https://clojars.org/org.clojars.turbopape/milestones)
+[![#milestones on slack channel](https://img.shields.io/badge/chat-%23%20team-yellowgreen.svg)](https://automagic-tools.slack.com/signup)
 
 <img src="./logo.jpg"
  alt="Automagic logo" title="The Robot and the Bunny" align="right" />
