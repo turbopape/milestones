@@ -180,17 +180,23 @@
   [a-task]
   (let [{:keys [task-id task-name resource-id duration predecessors priority milestone-id]} a-task
         regN  (js/RegExp "\\d+" "g")
+        regPnt (js/RegExp. "[.,\\/\\#!$%\\^&\\*;:{}=\\-_`~()]" "g")
+        clean-duration (if  duration
+                         (.replace (get duration 0) regPnt "" )
+                         nil)
+
+        _ (println "durtion" duration ", clean duration:" clean-duration)
         actual-task-id (if task-id
                          (js/parseInt  (get task-id 0))
                          (js/parseInt (get milestone-id 0)))
        
-        output {:taskname (apply str (interleave task-name (repeat  " "))) 
+        output {:task-name (apply str (interleave task-name (repeat  " "))) 
                 :resource-id (get  resource-id 0)
                 :priority (js/parseInt (get priority 0))
                 :duration  (js/parseInt
-                     (->>  (.value nlp  (get  duration 0))
-                           (.-number)))
-                :duration-unit (->>  (.value nlp  (get  duration 0))
+                            (->>  (.value nlp  clean-duration)
+                                  (.-number)))
+                :duration-unit (->>  (.value nlp  clean-duration)
                                      (.-unit))
                 :predecessors (->>
                                predecessors

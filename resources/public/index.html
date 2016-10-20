@@ -11,68 +11,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
-    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="shortcut icon" type="image/png" href="img/milestones-logo.jpg"/>
     
     
 
 
 
-  <body id="page_top" class="index">
+    <body id="page_top" class="index">
 
-    
-    <header>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-12">
-            <h2>Milestones - The Automagic Project Scheduler</h2>
-            <a href="https://github.com/turbopape/milestones"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
-            <div class="intro-text">
-              <span class="name"><a href="https://github.com/turbopape/milestones">Milestones</a> Play Ground by <a href="https://github.com/turbopape">@turbopape</a></span>
+      
+      <header>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Milestones - The Automagic Project Scheduler</h2>
+              <a href="https://github.com/turbopape/milestones"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
               <hr class="star-light">
-              <span class="skills">Milestones v0.3.2. Try typing in some tasks description, and hit <b>Schedule it !!</b> when you're ready... </span>
+              <span class="skills">Milestones v0.3.0. Try typing in some tasks description, and hit <b>Schedule it !</b> when you're ready...Here are some sample tasks (for now try to stick to those models... <br>and to use integers as IDs :). <br>Generally speaking, use simple english sentences to describe your tasks. For the moment being, Contents of your tasks shall be under the form Verb Determiner Noun (i.e: eat some bread, do some work...)<br>Click to see samples<button class="btn btn-info" data-toggle="collapse" data-target="#collapse1">samples</button></span>
+      
+                
+                <div class="panel-group" >
+                   <div class="panel-heading">
+                   
+                   </div>
+                   <div id="collapse1" class="panel-collapse collapse">
+                     <ul class="list-group">
+                       <li class="list-group-item"><pre>milestone 5 : goal reached  when tasks 2, 3 are complete. </pre></li>
+                       <li  class="list-group-item"><pre>For task 1 with priority 3 Rafik will have to eat some bread in 2 minutes, after  tasks 3, 2, 15.</pre></li>
+                       <li  class="list-group-item"><pre>When task 1, 2, 3 are achieved Rafik can work 3 minutes with priority 4 on task 4 in order to Eat some bread.</pre></li>
+                       <li  class="list-group-item"><pre>task 1 : Rafik shall eat bread in 2 minutes, with priority 4, after  task 3,2 and 15.</pre></li>
+                     </ul>
+                   </div>
+                </div>
+             
             </div>
           </div>
         </div>
-      </div>
-    </header>
-    
-    <section id="portfolio">
-      <div id="dzone" class="alert " role="alert"></div>
-      <div class="container-fluid">
-         <div class="row">
-           <div class="col-md-2">
-            <img class="img-responsive tn-small"
-                 src="img/milestones-logo.jpg"
-                 alt="The Robot and The Bunny Logo">
+      </header>
+      
+      <section id="portfolio">
+        <div id="dzone" class="alert " role="alert"></div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-2">
+              <img class="img-responsive tn-small"
+                   src="img/milestones-logo.jpg"
+                   alt="The Robot and The Bunny Logo">
+            </div>
+            <div class="col-md-4 portfolio-item">
+              <div id="milestones-codemirror">
+                
+                <textarea id="default-template" style="resize:none" rows="10"  class="form-control custom-control"  >
+                  Rafik can work 3 minutes with priority 1 on task 1 in order to Eat some bread. For task 2 with priority 3 Rafik will have to develop a program in 2 minutes, after  task 1. Milestone 3 : stuff finished when tasks 1 and 2 are complete.
+                </textarea>
+                <span id="schedule" class="input-group-addon btn btn-primary">Schedule it !</span>
+              </div>
+            </div>
+            <div class="col-sm-6 portfolio-item">
+              <div id="gantt-chart">
+                
+              </div>
+            </div>
+            
           </div>
-           <div class="col-md-4 portfolio-item">
-             <div id="milestones-codemirror">
-             
-             <textarea id="default-template" style="resize:none" rows="10"  class="form-control custom-control"  >
-               
-               == Here I put my text ==
+          
+        </div>
+      </section>
+      <footer>
+      </footer>
+      <script type="text/javascript" src="js/compiled/milestones.js"></script>
 
-
-             </textarea>
-             <span id="schedule" class="input-group-addon btn btn-primary">Schedule it !</span>
-             </div>
-           </div>
-           <div class="col-sm-6 portfolio-item">
-             <div id="gantt-chart">
-               
-             </div>
-           </div>
-           
-         </div>
-        
-      </div>
-    </section>
-    <footer>
-    </footer>
-    <script type="text/javascript" src="js/compiled/milestones.js"></script>
-
-</body>
+    </body>
 </html>

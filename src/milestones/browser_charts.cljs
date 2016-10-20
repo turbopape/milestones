@@ -24,8 +24,8 @@
   gantt charts all dates must be in RFC ISO-8601 format. Time units
   are strings usable by the moments frameork: years, months, days, hours, minutes, seconds"
   [tasks
-   schedule-begin  
-   time-units]
+   schedule-begin
+   default-units]
   
   (loop
       [remaining-tasks  tasks
@@ -35,26 +35,33 @@
                              achieved
                              begin
                              duration
+                             duration-unit
                              resource-id
                              predecessors] :as task-infos}] (first remaining-tasks)]
-        (recur (rest remaining-tasks)
-               (conj formatted-rows [(str task-id)
-                                     task-name
-                                     resource-id
-                                     (.add (js/moment schedule-begin)
-                                           (dec begin)
-                                           time-units)
-                                     (.add  (js/moment schedule-begin)
-                                            (dec (+ begin duration))
-                                            time-units)
-                                     (.asMilliseconds  (.. js/moment (duration duration "days"))) 
-                                     (int (* 100 (/ achieved duration)))
-                                     (if (empty? predecessors)
-                                       nil
-                                       (as-> predecessors p
-                                         (interleave p (repeat ","))
-                                         (butlast p)
-                                         (reduce str "" p)))])))
+        (let [time-units (if duration-unit
+                           (str duration-unit "s")
+                           default-units)]
+            (recur (rest remaining-tasks)
+                   (conj formatted-rows [(str task-id)
+                                         task-name
+                                         resource-id
+                                         (.add (js/moment schedule-begin)
+                                               (dec begin)
+                                               time-units)
+                                         (.add  (js/moment schedule-begin)
+                                                (dec (+ begin duration))
+                                                time-units)
+                                         (if duration 
+                                           (.asMilliseconds  (.. js/moment (duration duration time-units)))
+                                           0
+                                           ) 
+                                         (int (* 100 (/ achieved duration)))
+                                         (if (empty? predecessors)
+                                           nil
+                                           (as-> predecessors p
+                                             (interleave p (repeat ","))
+                                             (butlast p)
+                                             (reduce str "" p)))]))))
       (clj->js formatted-rows))))
 
 (defn draw-gantt-options!
@@ -66,10 +73,13 @@
   [options
    tasks
    schedule-start 
-   time-units 
+   default-duration-unit
    in-div-id]
   (let [data  (new js/google.visualization.DataTable)
-        data-rows (format-data-rows tasks schedule-start time-units)]
+        gantt-component (new js/google.visualization.Gantt
+                (.getElementById js/document in-div-id))
+        data-rows (format-data-rows tasks schedule-start default-duration-unit)
+                ]
 
     ;; Defining the columns of the GANTT
     (doto data
@@ -85,9 +95,8 @@
     ;; Adding DataRows
     (.addRows data data-rows)
     ;; Drawing
-    (.draw (new js/google.visualization.Gantt
-                (.getElementById js/document in-div-id))
+    (.draw gantt-component
            data
-           (clj->js options))))
+           options)))
 
 (def draw-gantt! (partial draw-gantt-options! chart-options))

@@ -7,7 +7,8 @@
   :min-lein-version "2.7.1"
   
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.229"]
+                 [org.clojure/clojurescript "1.9.293"]
+                 [prismatic/dommy "1.1.0"]
                  [org.clojure/core.async "0.2.391"
                   :exclusions [org.clojure/tools.reader]]
                  [expectations "2.1.8"]]
