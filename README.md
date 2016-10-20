@@ -1,4 +1,4 @@
-Milestones - The Thinking Tasks Scheduler
+Milestones - The Automagic Project Planner
 =============================================
 
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
