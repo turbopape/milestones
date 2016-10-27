@@ -1,3 +1,6 @@
+;;    <The "Natural Language Tools " - Part of Automagic Tools / Milestones>
+;;    Copyright (C) 2016 , Rafik NACCACHE <rafik@fekr.tech>
+
 (ns milestones.nlp-tools
   (:require [milestones.parser-rules :refer [rules item-significant-value?]]))
 
@@ -16,10 +19,7 @@
 
 (defn plural
   [txt]
-  (.text nlp txt)
-  )
-
-; sentence = (.sentence nlp sentence #js {:lexicon lexicon})
+  (.text nlp txt))
 
 (defn pos-tags-lexicon
   [lexicon
@@ -41,8 +41,8 @@
   [input-item
    current-tag-alternatives]
   (some #{(as-> input-item i
-                (get i 1)
-                (set (keys i)))} current-tag-alternatives))
+            (get i 1)
+            (set (keys i)))} current-tag-alternatives))
 
 (defn accept-tag
   "Verifies if an input like: [\"task\" {:Noun true}] correponds to
@@ -114,6 +114,7 @@
                          output
                          (assoc output (get output-stack :step)
                                 (get  output-stack :items))))
+          
           (and (not accept?)
                (some #{(get output-stack :step)}
                      optional-steps)) (if-let [ffw-stack (fast-forward tag-stack)]
@@ -122,13 +123,12 @@
                                                output-stack
                                                output)
                                         {:error {:step (get output-stack :step)
-                     :expected (first tag-stack)
-                     :item input-item}})
-       
+                                                 :expected (first tag-stack)
+                                                 :item input-item}})
+          
           (not accept?) {:error {:output output
                                  :step (get output-stack  :step)
                                  :expected (first tag-stack) :item input-item}}
-
           
           :default (recur (rest input-items)
                           new-stack
@@ -142,8 +142,8 @@
                       (empty? tag-stack))
                  (some #{(first tag-stack)} optional-steps)
                  (contains? (first tag-stack) :multi)) {:error false
-                                                  :result (assoc output (get output-stack :step)
-                                                                 (get  output-stack :items))} ;; all good,
+                                                        :result (assoc output (get output-stack :step)
+                                                                       (get  output-stack :items))} ;; all good,
             (not (empty? input-items) ) {:error "Unable to consume all input."
                                          :input input-items}
             (not (empty? tag-stack) ) {:error "Input does not fulfill all of the tag-stack states."
@@ -169,10 +169,8 @@
            :result (get cur-parse-result :result)}))
       {:errors errors})))
 
-
 (def parse-tags
   (partial parse-tags-rules rules))
-
 
 (defn curate-task  
   "Curates generated tasks : 1,2,3... => [1 2 3]
@@ -188,7 +186,7 @@
         actual-task-id (if task-id
                          (js/parseInt  (get task-id 0))
                          (js/parseInt (get milestone-id 0)))
-       
+        
         output {:task-name (apply str (interleave task-name (repeat  " "))) 
                 :resource-id (get  resource-id 0)
                 :priority (js/parseInt (get priority 0))
@@ -215,14 +213,11 @@
       {:error :unable-to-parse}
       (curate-task (:result the-task)))))
 
-
 (defn guess-tasks-from-str
   [tasks-str optional-steps]
   (let [sentences (->> tasks-str
                        (.text nlp)
-                       (.-sentences))
-       
-        ]
+                       (.-sentences))]
     (->> sentences 
          (map #(guess-a-task % optional-steps))
          (into {}))))
