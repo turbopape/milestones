@@ -4,7 +4,7 @@
             [clojure.walk :refer [keywordize-keys]]
             [milestones.dyna-scheduler :as d]))
 
-(defn parse
+(defn parse-yaml-tasks
   "Parses a YAML string to a clj(s) datastructure."
   [yaml-str]
   (let [parsed #?(:clj (parse-string yaml-str false)
@@ -14,8 +14,3 @@
                              (map (fn [[id task]] [(js/parseInt id) task]))))]
     (into {}
           (map keywordize-keys parsed))))
-
-(defn schedule
-  "Shortcut to be able to call the scheduler with a YAML string instead of EDN definition"
-  [yaml-tasks reordering-properties]
-  (d/schedule (parse yaml-tasks) reordering-properties))
