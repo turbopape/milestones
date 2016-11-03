@@ -277,7 +277,7 @@ should not happen).
 :milestones-w-no-predecessors  | [1 2...  These milestones don't have predecessors.
 
 ### YAML task definition
-As an alternative to defining the tasks in EDN, Milestones provide a parser that can be used to describe them in YAML.
+As an alternative to defining the tasks in Clojure maps, Milestones provide a parser that can be used to describe them in YAML.
 For example, above sample case can be defined as:
 
 ```YAML
