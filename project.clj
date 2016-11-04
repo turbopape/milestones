@@ -1,4 +1,4 @@
-(defproject org.clojars.turbopape/milestones "0.3.0"
+(defproject org.clojars.turbopape/milestones "0.3.1-SNAPSHOT"
   :description "Milestones : the Automagic Project Planner"
   :url "http://turbopape.github.io/milestones"
   :license {:name "MIT" 
@@ -11,6 +11,8 @@
                  [prismatic/dommy "1.1.0"]
                  [org.clojure/core.async "0.2.391"
                   :exclusions [org.clojure/tools.reader]]
+                 [io.forward/yaml "1.0.5"]
+                 [cljsjs/js-yaml "3.3.1-0"]
                  [expectations "2.1.8"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]

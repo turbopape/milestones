@@ -276,6 +276,50 @@ should not happen).
 :tasks-cycles                  | [[1 2 3]... Set of tasks that are in a cycle. In this example, 2 depends on 1, 2 on 3 and 3 on 1.
 :milestones-w-no-predecessors  | [1 2...  These milestones don't have predecessors.
 
+### YAML task definition
+As an alternative to defining the tasks in Clojure maps, Milestones provide a parser that can be used to describe them in YAML.
+For example, above sample case can be defined as:
+
+```YAML
+1:
+  task-name: Bring bread
+  resource-id: mehdi
+  duration: 5
+  priority: 1
+  predecessors: []
+2:
+  task-name: Bring butter
+  resource-id: rafik
+  duration: 5
+  priority: 1
+  predecessors: []
+3:
+  task-name: Put butter on bread
+  resource-id: salma
+  duration: 3
+  priority: 1
+  predecessors: [1, 2]
+4:
+  task-name: Eat toast
+  resource-id: rafik
+  duration: 4
+  priority: 1
+  predecessors: [3]
+5:
+  task-name: Eat toast
+  resource-id: salma
+  duration: 4
+  priority: 1
+  predecessors: [3]
+6:
+  task-name: Toasts ready
+  is-milestone: true
+  predecessors: [3]
+
+```
+
+You can use `parse-yaml-tasks` within `miltestones.yaml` namespace to convert the tasks before scheduling them.
+
 ## History
 
 The concept of auto-magic project scheduling is inspired from **the great**

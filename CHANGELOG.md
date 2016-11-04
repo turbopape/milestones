@@ -1,5 +1,8 @@
 CHANGELOG
 ==========
+## 0.3.1
+* Provide suport for task definition in YAML
+
 ## 0.3.0
 * Add GANTT Charts generation Thanks to [Google Charts Lib](https://developers.google.com/chart/interactive/docs/gallery/ganttchart)
 * Add support for NLP syntax parsing in clojurescript -
