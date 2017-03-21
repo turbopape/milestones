@@ -72,38 +72,6 @@ The time for each task is represented as an integer value.
      :predecessors [1] :begin 5} }
 ```
 
-## Natural Language Tasks Parser(ClojureScript)
-
-When on ClojureScript, you can use a parser based on rules expressed
-in terms of POS tags to feed the scheduler with tasks written in
-natural english. You can have an idea of what kinds of sentences it
-can understand by looking into
-the
-[Parser Rules file](https://github.com/turbopape/milestones/blob/master/src/milestones/parser_rules.cljs).
-Besides providing support for understanding the fields we discussed
-above in humane language, the parser adds the notion of time
-unit. actually, you express your tasks by telling how much *actual*
-time is needed to achieve it.
-
-The parser rules are multiple sets of the POS tags that an input is
-expected to conform to in order to be considered as legit. It is
-conceptually represented as a stack of these possible different
-positions. Everytime an input is conform to the head of a stack, both
-are consumed and the task is built this way.
-
-The parser also supports the notion of steps, that is, for a specific
-status of the parsing automata we've just described, which task
-property are we processing?
-
-We can define steps as optional, for instance, tasks may not all have
-predecessors.
-
-Also, the parser supports recurring stages, in the vein of the +
-operator in regexp. It makes it possible to process things like
-multiple predecessors.
-
-You can have an idea of the inner mechanics of the NLP parser by
-skimming over its code [here.](https://github.com/turbopape/milestones/blob/master/src/milestones/nlp_tools.cljs)
 
 ## See Milestones OnLine
 
@@ -121,6 +89,11 @@ Also, Priority and predecessors are optional in the web
 interface. This is related to the natural language implementation, but
 roughly speaking this means that if you omit these clauses in your
 task descriptions, the system will forgive you.
+
+The Web version is being lifted to use the newly developed NLP
+library: [postagga](https://github.com/turbopape/postagga). Now
+milestones will host the scheduling library, the NLP facilities etc
+has moved to this new project.
 
 ## Installation
 
