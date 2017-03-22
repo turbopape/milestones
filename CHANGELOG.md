@@ -1,10 +1,14 @@
 CHANGELOG
 ==========
+## 1.0.0-1
+* Removed public assets.
+* changed versions scheme to refelct api changes.
+
 ## 0.4.0
 * Revert back to the unique lib format. Milestones is a lib, not a web
   site not an NLP Parser. Will copy over the cljs etc to another
   project.
-* Removed dependency to expectations.  
+* Removed dependency to expectations.
 
 ## 0.3.1
 * Provide suport for task definition in YAML
