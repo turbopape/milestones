@@ -270,8 +270,8 @@ Please note that this project is released with a [Contributor Code of Conduct](.
 
 ## License and Credits
 
-Copyright © 2016 Rafik Naccache and [Contributors](./CONTRIBUTORS.md). Distributed under the terms of the [MIT License] (https://github.com/turbopape/milestones/blob/master/LICENSE).
+Copyright © 2016 Rafik Naccache and [Contributors](./CONTRIBUTORS.md). Distributed under the terms of the [MIT License](https://github.com/turbopape/milestones/blob/master/LICENSE).
 
 All Libraries used in this project (see project.clj) are owned by their respective authors and their respective licenses apply.
 
-The Automagic Logo - Labeled "The Robot and The Bunny" was created by my friend Chakib Daoud.
+The Logo is created by my talented friend the great [Chakib Daoud](https://www.facebook.com/3amettaher/?fref=ts)
